@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextDatabase xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="texts.xsd" Version="4.22.0">
+  <Languages>
+    <Language Id="GB" />
+  </Languages>
+  <Texts>
+    <TextGroup Id="Info">
+      <Text Id="__SingleUse_04A0" Alignment="Center" TypographyId="Info">
+        <Translation Language="GB">+15&#10;&#10;+10&#10;&#10;+5&#10;&#10;0&#10;&#10;-5&#10;&#10;-10&#10;&#10;-15</Translation>
+      </Text>
+      <Text Id="__SingleUse_FL50" Alignment="Left" TypographyId="Info">
+        <Translation Language="GB">20Hz     200Hz    500Hz    1KHz    4KHz    8KHz  16KHz</Translation>
+      </Text>
+      <Text Id="__SingleUse_YX6L" Alignment="Center" TypographyId="Info">
+        <Translation Language="GB">12dB&#10;&#10;6dB&#10;&#10;0dB&#10;&#10;-6dB&#10;&#10;-12dB</Translation>
+      </Text>
+      <Text Id="__SingleUse_LMT5" Alignment="Left" TypographyId="Info">
+        <Translation Language="GB">       20Hz                  200Hz                       2kHz                 20kHz </Translation>
+      </Text>
+      <Text Id="__SingleUse_V3DE" Alignment="Center" TypographyId="Info">
+        <Translation Language="GB">0dB&#10;&#10;-20dB&#10;&#10;-40dB&#10;&#10;-60dB&#10;&#10;-80dB</Translation>
+      </Text>
+      <Text Id="__SingleUse_JUPF" Alignment="Left" TypographyId="Info">
+        <Translation Language="GB">       20Hz                  200Hz                       2kHz                 20kHz </Translation>
+      </Text>
+    </TextGroup>
+    <TextGroup Id="Titulos">
+      <Text Id="__SingleUse_7546" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">Editar Ecualizacion</Translation>
+      </Text>
+      <Text Id="__SingleUse_1TKC" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">Ecualizador</Translation>
+      </Text>
+      <Text Id="__SingleUse_9EMA" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">Configuracion general</Translation>
+      </Text>
+      <Text Id="TITLE_CROSS_OVER_EDIT" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">Editar Cross Over</Translation>
+      </Text>
+      <Text Id="__SingleUse_K4NI" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">APOLO I</Translation>
+      </Text>
+      <Text Id="__SingleUse_AODP" Alignment="Center" TypographyId="Titulos">
+        <Translation Language="GB">&gt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_JH9L" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">Configuracion Canales</Translation>
+      </Text>
+      <Text Id="__SingleUse_LFYS" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">Entrada de Audio</Translation>
+      </Text>
+      <Text Id="__SingleUse_I6K4" Alignment="Center" TypographyId="Titulos">
+        <Translation Language="GB">&gt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_NJAW" Alignment="Center" TypographyId="Titulos">
+        <Translation Language="GB">&gt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_CXAE" Alignment="Center" TypographyId="Titulos">
+        <Translation Language="GB">&lt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_ZAJW" Alignment="Center" TypographyId="Titulos">
+        <Translation Language="GB">I I</Translation>
+      </Text>
+      <Text Id="BK_Title1" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">Configuracion</Translation>
+      </Text>
+      <Text Id="BK_Title2" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">Configuracion</Translation>
+      </Text>
+    </TextGroup>
+    <TextGroup Id="Unsorted">
+      <Text Id="__SingleUse_XJJY" Alignment="Center" TypographyId="Titulos">
+        <Translation Language="GB">&gt;</Translation>
+      </Text>
+      <Text Id="__SingleUse_K7QF" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Volumen &#10;Maximo:</Translation>
+      </Text>
+      <Text Id="__SingleUse_SZTV" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Correccion &#10;Loudness:</Translation>
+      </Text>
+      <Text Id="__SingleUse_PBBT" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">L</Translation>
+      </Text>
+      <Text Id="__SingleUse_ONNS" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">R</Translation>
+      </Text>
+      <Text Id="__SingleUse_1Q3C" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Balance Canal:</Translation>
+      </Text>
+    </TextGroup>
+    <TextGroup Id="LabelBotones">
+      <Text Id="Pasa_Altos2_CROSSOVER" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Pasa Altos 2</Translation>
+      </Text>
+      <Text Id="Pasa_Altos1_CROSSOVER" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Pasa Altos 1</Translation>
+      </Text>
+      <Text Id="Pasa_Bandas2_CROSSOVER" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Pasa Bandas 2</Translation>
+      </Text>
+      <Text Id="Pasa_Bandas1_CROSSOVER" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Pasa Bandas 1</Translation>
+      </Text>
+      <Text Id="Pasa_Bajos2_CROSSOVER" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Pasa Bajos 2</Translation>
+      </Text>
+      <Text Id="Pasa_Bajos1_CROSSOVER" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Pasa Bajos 1</Translation>
+      </Text>
+      <Text Id="Sin_Filtro_CROSSOVER" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Plano</Translation>
+      </Text>
+      <Text Id="pers_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">PERS</Translation>
+      </Text>
+      <Text Id="Plano_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Plano</Translation>
+      </Text>
+      <Text Id="Cine_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Cine</Translation>
+      </Text>
+      <Text Id="Vocal_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Vocal</Translation>
+      </Text>
+      <Text Id="Electo_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Electro</Translation>
+      </Text>
+      <Text Id="Rock_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Rock</Translation>
+      </Text>
+      <Text Id="Pop_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Pop</Translation>
+      </Text>
+      <Text Id="Izquierdo_CONFIGCANAL" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Izquierdo</Translation>
+      </Text>
+      <Text Id="Derecho_CONFIGCANAL" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Derecho</Translation>
+      </Text>
+      <Text Id="Estereo_INAUDIO" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Estereo</Translation>
+      </Text>
+      <Text Id="Izquierdo_INAUDIO" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Izquierdo</Translation>
+      </Text>
+      <Text Id="Derecho_INAUDIO" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Derecho</Translation>
+      </Text>
+      <Text Id="AUX_INAUDIO" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">AUX</Translation>
+      </Text>
+      <Text Id="Bluetooth_INAUDIO" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Bluetooth</Translation>
+      </Text>
+      <Text Id="Canal0_CONFIGCANAL" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Canal 0</Translation>
+      </Text>
+      <Text Id="Canal1_CONFIGCANAL" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Canal 1</Translation>
+      </Text>
+      <Text Id="Canal2_CONFIGCANAL" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Canal 2</Translation>
+      </Text>
+      <Text Id="Canal3_CONFIGCANAL" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Canal 3</Translation>
+      </Text>
+      <Text Id="pers_system_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">PERS</Translation>
+      </Text>
+      <Text Id="cuatro_cero_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">4.0</Translation>
+      </Text>
+      <Text Id="tres_uno_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">3.1</Translation>
+      </Text>
+      <Text Id="tres_cero_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">3.0</Translation>
+      </Text>
+      <Text Id="dos_uno_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">2.1</Translation>
+      </Text>
+      <Text Id="dos_cero_CONFIGRAP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">2.0</Translation>
+      </Text>
+      <Text Id="__SingleUse_5H77" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Canal de salida &#10;Seleccionado:</Translation>
+      </Text>
+      <Text Id="Editar" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Editar</Translation>
+      </Text>
+      <Text Id="__SingleUse_XIV0" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Canal:</Translation>
+      </Text>
+      <Text Id="__SingleUse_AX5S" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Editar</Translation>
+      </Text>
+      <Text Id="__SingleUse_0Y1V" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Estado:</Translation>
+      </Text>
+      <Text Id="__SingleUse_XYXR" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Volumen Canal:</Translation>
+      </Text>
+      <Text Id="__SingleUse_4ZEJ" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Cross Over:</Translation>
+      </Text>
+      <Text Id="__SingleUse_T4X7" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Canal de Audio:</Translation>
+      </Text>
+      <Text Id="__SingleUse_XZDR" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Tipo de sistema:</Translation>
+      </Text>
+      <Text Id="__SingleUse_2YGQ" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Perfil de &#10;Ecualizacion:</Translation>
+      </Text>
+      <Text Id="__SingleUse_QQXB" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">General</Translation>
+      </Text>
+      <Text Id="__SingleUse_5BLT" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Entrada Audio</Translation>
+      </Text>
+      <Text Id="__SingleUse_WHNC" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Ecualizador</Translation>
+      </Text>
+      <Text Id="__SingleUse_02MN" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Canales salida</Translation>
+      </Text>
+      <Text Id="Canal2" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Canal de salida:</Translation>
+      </Text>
+      <Text Id="__SingleUse_P180" Alignment="Left" TypographyId="Botones">
+        <Translation Language="GB">Entrada Audio:</Translation>
+      </Text>
+    </TextGroup>
+  </Texts>
+  <Typographies>
+    <Typography Id="Titulos" Font="micross.ttf" Size="30" Bpp="4" Direction="RTL" FallbackCharacter="?" />
+    <Typography Id="Botones" Font="micross.ttf" Size="21" Bpp="4" Direction="LTR" FallbackCharacter="?" />
+    <Typography Id="Info" Font="micross.ttf" Size="16" Bpp="4" Direction="LTR" FallbackCharacter="?" />
+  </Typographies>
+</TextDatabase>
