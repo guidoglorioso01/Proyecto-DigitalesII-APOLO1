@@ -24,7 +24,9 @@
 #include "esp_gap_bt_api.h"
 #include "esp_a2dp_api.h"
 #include "esp_avrc_api.h"
-#include "apolo_app.h"
+#include "comI2c.h"
+
+
 /* device name */
 #define LOCAL_DEVICE_NAME    "ESP_SPEAKER"
 
@@ -145,6 +147,11 @@ static void bt_av_hdl_stack_evt(uint16_t event, void *p_param)
 
 void app_main(void)
 {
+    //Init I2C
+    comi2c_start_up();
+    
+    //Init Bt
+
     /* initialize NVS — it is used to store PHY calibration data */
     esp_err_t err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -192,8 +199,9 @@ void app_main(void)
     pin_code[2] = '3';
     pin_code[3] = '4';
     esp_bt_gap_set_pin(pin_type, 4, pin_code);
+
     
-    apolo_task_start_up();
+
     bt_app_task_start_up();
     /* bluetooth device name, connection mode and profile set up */
     bt_app_work_dispatch(bt_av_hdl_stack_evt, BT_APP_EVT_STACK_UP, NULL, 0, NULL);

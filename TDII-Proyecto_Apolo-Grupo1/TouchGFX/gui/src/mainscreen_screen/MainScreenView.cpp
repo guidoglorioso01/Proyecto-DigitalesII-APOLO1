@@ -1,5 +1,6 @@
 #include <gui/mainscreen_screen/MainScreenView.hpp>
-
+#include <texts/TextKeysAndLanguages.hpp>
+#include "I2CDriver.h"
 
 MainScreenView::MainScreenView()
 {
@@ -24,19 +25,28 @@ void MainScreenView::tearDownScreen()
 }
 
 // Button next press
-void MainScreenView::function6(){
-
+void MainScreenView::function6() {
+	send_cmd_esp(NEXT_SONG_CMD);
 }
 
 // Button pause press
-void MainScreenView::function9(){
+void MainScreenView::function9() {
+	static bool flag = true;
+	TypedText textoStop = T___SINGLEUSE_ZAJW;
+	TypedText textoPlay = T___SINGLEUSE_AODP;
+	send_cmd_esp(STOP_SONG_CMD); // -> La logica de poner pause/play se resuelve en el esp
+	if(flag)
+		this->ButtPause.setLabelText(textoPlay);
+	else
+		this->ButtPause.setLabelText(textoStop);
+	flag = !flag;
+
 
 }
 
-// Button before press
-void MainScreenView::function12()
-{
-
+// Button previous press
+void MainScreenView::function12() {
+	send_cmd_esp(PREVIOUS_SONG_CMD);
 }
 
 // Button volume press

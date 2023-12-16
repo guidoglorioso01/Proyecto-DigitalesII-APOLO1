@@ -160,6 +160,10 @@ static void bt_av_notify_evt_handler(uint8_t event_id, esp_avrc_rn_param_t *even
     case ESP_AVRC_RN_PLAY_POS_CHANGED:
         ESP_LOGI(BT_AV_TAG, "Play position changed: %"PRIu32"-ms", event_parameter->play_pos);
         bt_av_play_pos_changed();
+        /*
+                SANLOREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+        */
+
         break;
     /* others */
     default:
@@ -424,6 +428,10 @@ static void bt_av_hdl_avrc_ct_evt(uint16_t event, void *p_param)
     /* when metadata responsed, this event comes */
     case ESP_AVRC_CT_METADATA_RSP_EVT: {
         ESP_LOGI(BT_RC_CT_TAG, "AVRC metadata rsp: attribute id 0x%x, %s", rc->meta_rsp.attr_id, rc->meta_rsp.attr_text);
+        /*
+            SANLOREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+            meta_rsp.attr_length
+        */
         free(rc->meta_rsp.attr_text);
         break;
     }

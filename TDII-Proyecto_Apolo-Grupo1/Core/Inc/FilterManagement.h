@@ -10,6 +10,7 @@
 #include "arm_math.h"
 #include <math.h>
 #include "user_info.h"
+#include "I2SDriver.h"
 
 
 #ifndef INC_FILTERCOEFS_H_
@@ -32,12 +33,9 @@
 
  #define BUFFER_SAMPLE_LEN   3000
  #define BLOCK_SIZE_FLOAT BUFFER_SAMPLE_LEN
- #define DATOS_P_CANAL BUFFER_SAMPLE_LEN
- #define BUFF_SIZE 		DATOS_P_CANAL*2
 
 
  typedef enum{Q15=0,Q32=1}type_data_filter;
- typedef enum{IZQUIERDO=0,DERECHO=1}canal_t;
 
 
 // Funciones diseño filtros RBJ
@@ -69,9 +67,6 @@ void filter_init_system();
 void process_filter();
 void process_set_gains();
 
-
-uint16_t readData_DMA(canal_t canal, uint32_t nro_dato);
-void writeData_DMA(uint8_t ampli, uint32_t nro_dato, uint16_t dato);
 
 #ifdef __cplusplus
 }

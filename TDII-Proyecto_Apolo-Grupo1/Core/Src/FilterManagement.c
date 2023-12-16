@@ -27,28 +27,6 @@ arm_biquad_casd_df1_inst_q15 iir_ch1_settings,  iir_ch2_settings, iir_ch3_settin
 
 q15_t buff_filtrado1[BUFFER_SAMPLE_LEN];
 q15_t buff_filtrado2[BUFFER_SAMPLE_LEN];
-//#############################################################################
-//Double Buffering
-//#############################################################################
-
-//Buffers de entrada
-uint16_t bufferInA[BUFF_SIZE];
-uint16_t bufferInB[BUFF_SIZE];
-uint16_t *ptrDmaIn = bufferInA;
-uint16_t *ptrProcessIn = bufferInB;
-
-//Buffers de Salida AB
-uint16_t bufferOut1_AB[BUFF_SIZE];
-uint16_t bufferOut2_AB[BUFF_SIZE];
-uint16_t *ptrProcessOutAB = bufferOut1_AB;
-uint16_t *ptrDmaOutAB = bufferOut2_AB;
-
-//Buffers Salida CD
-uint16_t bufferOut1_CD[BUFF_SIZE];
-uint16_t bufferOut2_CD[BUFF_SIZE];
-uint16_t *ptrProcessOutCD = bufferOut1_CD;
-uint16_t *ptrDmaOutCD = bufferOut2_CD;
-
 
 //#############################################################################
 // Funciones de filtrado
@@ -260,7 +238,6 @@ extern TIM_HandleTypeDef htim2;
 
 
 void process_filter(){
-
 	// Buffer entrada de audio
 	tim1_cuenta = 0 ;
 	__HAL_TIM_SET_COUNTER(&htim2,0);
@@ -370,26 +347,7 @@ void process_set_gains(){
 
 }
 
-//#############################################################################
-// Funciones para leer/escribir en buffer DMA
-//#############################################################################
 
-uint16_t readData_DMA(canal_t canal, uint32_t nro_dato) {
-	//uint16_t devolver = ;
-	return ptrProcessIn[2*nro_dato+canal];
-}
-
-
-void writeData_DMA(uint8_t ampli, uint32_t nro_dato, uint16_t dato) {
-	if(ampli==CHANNEL_0)
-		ptrProcessOutAB[nro_dato*2+IZQUIERDO] = dato;
-	if(ampli==CHANNEL_1)
-		ptrProcessOutAB[nro_dato*2+DERECHO] = dato;
-	if(ampli==CHANNEL_2)
-		ptrProcessOutCD[nro_dato*2+IZQUIERDO] = dato;
-	if(ampli==CHANNEL_3)
-		ptrProcessOutCD[nro_dato*2+DERECHO] = dato;
-}
 
 
 
