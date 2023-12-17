@@ -70,6 +70,8 @@ static void bt_av_hdl_avrc_ct_evt(uint16_t event, void *p_param);
 /* avrc target event handler */
 static void bt_av_hdl_avrc_tg_evt(uint16_t event, void *p_param);
 
+
+uint8_t master_volume;
 /*******************************
  * STATIC VARIABLE DEFINITIONS
  ******************************/
@@ -160,10 +162,6 @@ static void bt_av_notify_evt_handler(uint8_t event_id, esp_avrc_rn_param_t *even
     case ESP_AVRC_RN_PLAY_POS_CHANGED:
         ESP_LOGI(BT_AV_TAG, "Play position changed: %"PRIu32"-ms", event_parameter->play_pos);
         bt_av_play_pos_changed();
-        /*
-                SANLOREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-        */
-
         break;
     /* others */
     default:
@@ -227,11 +225,25 @@ void bt_i2s_driver_uninstall(void)
 
 static void volume_set_by_controller(uint8_t volume)
 {
-    ESP_LOGI(BT_RC_TG_TAG, "Volume is set by remote controller to: %"PRIu32"%%", (uint32_t)volume * 100 / 0x7f);
-    /* set the volume in protection of lock */
+    // ESP_LOGI(BT_RC_TG_TAG, "Volume is set by remote controller to: %"PRIu32"%%", (uint32_t)volume * 100 / 0x7f);
+    // /* set the volume in protection of lock */
+    // _lock_acquire(&s_volume_lock);
+    // s_volume = volume;
+    // _lock_release(&s_volume_lock);
+    
+    ESP_LOGI(BT_RC_TG_TAG, "Volume is set by remote controller %d\n", (int)volume * 100 / 0x7f);
     _lock_acquire(&s_volume_lock);
     s_volume = volume;
     _lock_release(&s_volume_lock);
+
+    master_volume = (uint8_t)((s_volume / 127.0) * 16.0 + .5);
+    // ESP_LOGI(BT_RC_TG_TAG, "Mastervolume is %d\n", master_volume);
+    // esp_avrc_rn_param_t rn_param;
+    // rn_param.volume = volume;
+
+    // // the thing that changes the volume
+    // int response = esp_avrc_tg_send_rn_rsp(ESP_AVRC_RN_VOLUME_CHANGE, ESP_AVRC_RN_RSP_CHANGED, &rn_param);
+    // ESP_LOGI(BT_RC_TG_TAG, "the response is %d", response);
 }
 
 static void volume_set_by_local_host(uint8_t volume)
@@ -428,10 +440,6 @@ static void bt_av_hdl_avrc_ct_evt(uint16_t event, void *p_param)
     /* when metadata responsed, this event comes */
     case ESP_AVRC_CT_METADATA_RSP_EVT: {
         ESP_LOGI(BT_RC_CT_TAG, "AVRC metadata rsp: attribute id 0x%x, %s", rc->meta_rsp.attr_id, rc->meta_rsp.attr_text);
-        /*
-            SANLOREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-            meta_rsp.attr_length
-        */
         free(rc->meta_rsp.attr_text);
         break;
     }
@@ -474,13 +482,14 @@ static void bt_av_hdl_avrc_tg_evt(uint16_t event, void *p_param)
     case ESP_AVRC_TG_CONNECTION_STATE_EVT: {
         uint8_t *bda = rc->conn_stat.remote_bda;
         ESP_LOGI(BT_RC_TG_TAG, "AVRC conn_state evt: state %d, [%02x:%02x:%02x:%02x:%02x:%02x]",
-                 rc->conn_stat.connected, bda[0], bda[1], bda[2], bda[3], bda[4], bda[5]);
+                 rc->conn_stat.connected, bda[0], bda[1], bda[
+            2], bda[3], bda[4], bda[5]);
         if (rc->conn_stat.connected) {
             /* create task to simulate volume change */
-            xTaskCreate(volume_change_simulation, "vcsTask", 2048, NULL, 5, &s_vcs_task_hdl);
+            // xTaskCreate(volume_change_simulation, "vcsTask", 2048, NULL, 5, &s_vcs_task_hdl);
         } else {
-            vTaskDelete(s_vcs_task_hdl);
-            ESP_LOGI(BT_RC_TG_TAG, "Stop volume change simulation");
+            // vTaskDelete(s_vcs_task_hdl);
+            // ESP_LOGI(BT_RC_TG_TAG, "Stop volume change simulation");
         }
         break;
     }

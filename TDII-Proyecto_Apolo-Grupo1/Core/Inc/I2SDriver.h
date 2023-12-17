@@ -15,7 +15,7 @@
 
 typedef enum{IZQUIERDO=0,DERECHO=1}canal_t;
 
-#define DATOS_P_CANAL 	1000
+#define DATOS_P_CANAL 	BUFFER_SAMPLE_LEN
 #define BUFF_SIZE 		DATOS_P_CANAL*2
 
 
@@ -54,7 +54,7 @@ void transmitirDatos();
 //Funciones del usuario de la API
 //#############################################################################
 size_t readData_I2S(uint8_t canal, q15_t *buff, size_t lenToRead);
-void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite);
+void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite,uint8_t gain);
 void lberarSemaforoProc();
 
 //#############################################################################

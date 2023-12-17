@@ -131,7 +131,7 @@ void TouchGFXSYNC_process(void *arguments){
 
 	while(1){
 		touchgfxSignalVSync();
-		vTaskDelay(pdMS_TO_TICKS(1)); // el tick del sistema es 1ms y quiero que se actualice a 25HZ la pantalla -> suspendo la tarea durante 40ms
+		vTaskDelay(pdMS_TO_TICKS(40)); // el tick del sistema es 1ms y quiero que se actualice a 25HZ la pantalla -> suspendo la tarea durante 40ms
 
 	}
 }
@@ -159,17 +159,17 @@ void SaveData_process(void *arguments){
 void FilterData_process(void *arguments){
 
 	// Deberia verificar que previamente se hayan cargado los datos.
-
+	vTaskDelay(pdMS_TO_TICKS(2000));
 	filter_init_system(); // inicializo los filtros
 
 	while(1){
 
 		// Verifico si hay datos nuevos para filtrar
-		xSemaphoreTake(semProcessData,portMAX_DELAY);
+		//xSemaphoreTake(semProcessData,portMAX_DELAY);
 		process_filter();
-		process_set_gains();
-		xSemaphoreGive(semProcessData);
-		vTaskDelay(pdMS_TO_TICKS(20)); // esto se tiene que remplazar y que se cuelgue las task hasta que haya llegado un paquete nuevo
+		//process_set_gains();
+		//xSemaphoreGive(semProcessData);
+		//vTaskDelay(pdMS_TO_TICKS(50)); // esto se tiene que remplazar y que se cuelgue las task hasta que haya llegado un paquete nuevo
 	}
 }
 
@@ -282,13 +282,14 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
 #endif
 
-  xTaskCreate(TouchGFXSYNC_process, "GFX SYNC", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
+
+  xTaskCreate(TouchGFXSYNC_process, "GFX SYNC", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
   xTaskCreate(Touchscreen_process, "UPD TS", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
   xTaskCreate(TouchGFX_Task, "UPD GFX", 2000, NULL, tskIDLE_PRIORITY + 2, NULL);
-  xTaskCreate(SaveData_process, "SaveData", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
-  xTaskCreate(task_I2S_recieve, "Audio In", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2 ,NULL);	// Recepcion datos I2S -> Prioridad una menos que la de procesamiento
-  //xTaskCreate(FilterData_process, "ProcessData", 2000, NULL, tskIDLE_PRIORITY + 3 ,NULL); 		// se le debe dar la mayor prioridad
-  //xTaskCreate(CalculateCoefs_process, "CalcCoefsData", 500, NULL, tskIDLE_PRIORITY + 4 ,NULL); 	// Process que calcula los coeficientes aun mas prioridad para tenerlos listos antes de convertir
+  xTaskCreate(SaveData_process, "SaveData", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 4 ,NULL);
+  xTaskCreate(task_I2S_recieve, "Audio In", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3 ,NULL);	// Recepcion datos I2S -> Prioridad una menos que la de procesamiento
+  xTaskCreate(FilterData_process, "ProcessData", 2000, NULL, tskIDLE_PRIORITY + 3 ,NULL); 		// se le debe dar la mayor prioridad
+  xTaskCreate(CalculateCoefs_process, "CalcCoefsData", 500, NULL, tskIDLE_PRIORITY + 4 ,NULL); 	// Process que calcula los coeficientes aun mas prioridad para tenerlos listos antes de convertir
 
 
   /* add threads, ... */
@@ -327,14 +328,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 15;
-  RCC_OscInitStruct.PLL.PLLN = 254;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV6;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 84;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 7;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -350,7 +350,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -367,8 +367,8 @@ void PeriphCommonClock_Config(void)
   /** Initializes the peripherals clock
   */
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2S;
-  PeriphClkInitStruct.PLLI2S.PLLI2SN = 360;
-  PeriphClkInitStruct.PLLI2S.PLLI2SR = 2;
+  PeriphClkInitStruct.PLLI2S.PLLI2SN = 72;
+  PeriphClkInitStruct.PLLI2S.PLLI2SR = 3;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -396,7 +396,7 @@ static void MX_ADC1_Init(void)
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_10B;
   hadc1.Init.ScanConvMode = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;

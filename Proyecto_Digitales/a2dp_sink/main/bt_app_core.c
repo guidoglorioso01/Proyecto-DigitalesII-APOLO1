@@ -22,6 +22,10 @@
 #endif
 #include "freertos/ringbuf.h"
 
+#include "volume_control.h"
+
+extern uint8_t master_volume;
+
 
 #define RINGBUF_HIGHEST_WATER_LEVEL    (32 * 1024)
 #define RINGBUF_PREFETCH_WATER_LEVEL   (20 * 1024)
@@ -230,6 +234,7 @@ void bt_i2s_task_shut_down(void)
     }
 }
 
+
 size_t write_ringbuf(const uint8_t *data, size_t size)
 {
     size_t item_size = 0;
@@ -245,7 +250,14 @@ size_t write_ringbuf(const uint8_t *data, size_t size)
         return 0;
     }
 
-    done = xRingbufferSend(s_ringbuf_i2s, (void *)data, size, (TickType_t)0);
+    // codigo que agrego
+    uint8_t *volumedData = (uint8_t *)malloc(sizeof(uint8_t)*size);
+    done = xRingbufferSend(s_ringbuf_i2s,(void*) volume_control_changeVolume(data, volumedData, size, master_volume) , size, portMAX_DELAY);
+    // data
+    free(volumedData);
+    // fin codigo que agrego
+
+    //done = xRingbufferSend(s_ringbuf_i2s, (void *)data, size, (TickType_t)0);
 
     if (!done) {
         ESP_LOGW(BT_APP_CORE_TAG, "ringbuffer overflowed, ready to decrease data! mode changed: RINGBUFFER_MODE_DROPPING");

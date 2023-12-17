@@ -5,7 +5,7 @@
  *      Author: guido
  */
 #include <FilterManagement.h>
-
+#include "I2SDriver.h"
 
 
 //#############################################################################
@@ -235,20 +235,26 @@ void filter_init_system(){
 uint32_t tim1_cuenta=0;
 extern TIM_HandleTypeDef htim2;
 
+/*
+ * // Buffer entrada de audio
 
+ * */
 
 void process_filter(){
-	// Buffer entrada de audio
-	tim1_cuenta = 0 ;
-	__HAL_TIM_SET_COUNTER(&htim2,0);
+
+//	tim1_cuenta = 0 ;
+//	__HAL_TIM_SET_COUNTER(&htim2,0);
+
 	UserData buff;
 	get_user_data(&buff);
 
+
 	//1 Realizo el filtrado de ecualizacion (canal derecho)
 
-//	for(int i=0;BUFFER_SAMPLE_LEN;i++){ //  Agarro del buff DMA los datos que necesito Canal 0 (Creo que es el derecho)
-//		buff_filtrado1[i] = (q15_t) readData_DMA(DERECHO,i);
-//	}
+	// Pido datos si los hay
+	readData_I2S(DERECHO, buff_filtrado1, BUFFER_SAMPLE_LEN);
+
+	// Realizo el primer filtrado
 	filter_function_eq(buff_filtrado1,buff_filtrado2);
 
 	//2 Realizo el filtrado de cada canal que necesite datos del canal derecho.
@@ -264,28 +270,18 @@ void process_filter(){
 
 			if(left_right == RIGHT_CHANNEL_OUTPUT){
 
-				filter_function_co(channel,buff_filtrado2,buff_filtrado1);
+				//filter_function_co(channel,buff_filtrado2,buff_filtrado1);
 
-				for(int i2=0;i2<BUFFER_SAMPLE_LEN;i2++){
-					// Escribo en el buffer que corresponda y aplico la ganancia del canal
-					writeData_DMA(channel, i2, (uint16_t)(buff_filtrado2[i2]* (float)gain_channels[channel]));
-				}
+				writeData_I2S(channel,(int16_t *) buff_filtrado2, BUFFER_SAMPLE_LEN,1); // tegno que poner el buff1
+				// FALTA APLICAR GANANCIA gain_channels[channel]
+
 			}
 		}
 	}
 
 	//3 Realizo el filtrado de ecualizacion (canal Izquierdo)
 
-//	for(int i=0;BUFFER_SAMPLE_LEN;i++) //  Agarro del buff DMA los datos que necesito Canal 0 (Creo que es el derecho)
-//		buff_filtrado1[i] = readData_DMA(IZQUIERDO,i);
-
-	// Solo para debug  SACAR!!!!!!!!!!!
-	for(int i=0;i<BUFFER_SAMPLE_LEN;i++){
-		buff_filtrado1[i] =0;
-	}
-
-	buff_filtrado1[1] = 0x3FFF; //hago un delta
-	// fin del debug
+	readData_I2S(IZQUIERDO, buff_filtrado1, BUFFER_SAMPLE_LEN);
 
 	filter_function_eq(buff_filtrado1,buff_filtrado2);
 
@@ -298,27 +294,26 @@ void process_filter(){
 			uint8_t channel = buff.audio_output[i].channel;
 			uint8_t left_right = buff.audio_output[i].channel_audio;
 
-			// Si usa el canal izquierdo obtengo la salida sino no hago nada
-
-				// Solo para debug  SACAR!!!!!!!!!!!
-				for(int i=0;i<BUFFER_SAMPLE_LEN;i++){
-					buff_filtrado2[i] =0;
-				}
-
-				buff_filtrado2[0] = 0x3FFF; //hago un delta
-				// fin del debug
-
 			if(left_right == LEFT_CHANNEL_OUTPUT){
-				filter_function_co(channel,buff_filtrado2,buff_filtrado1);
+				//filter_function_co(channel,buff_filtrado2,buff_filtrado1);
 
-				for(int i2=0;i2<BUFFER_SAMPLE_LEN;i2++){
-					// Escribo en el buffer que corresponda y aplico la ganancia del canal
-					writeData_DMA(channel, i2, (uint16_t)(buff_filtrado2[i2]* (float)gain_channels[channel]));
-				}
+				writeData_I2S(channel,(int16_t *) buff_filtrado2, BUFFER_SAMPLE_LEN,1);
+				// FALTA APLICAR GANANCIA gain_channels[channel]
+
 			}
 		}
 	}
-	tim1_cuenta = __HAL_TIM_GET_COUNTER(&htim2);
+	// pongo los canales que no se usan en cero
+	for(int i=0;i < 4;i++){
+		// Chequeo si el canal esta encendido
+		if(buff.audio_output[i].state == OFF){
+			uint8_t channel = buff.audio_output[i].channel;
+			writeData_I2S(channel,(int16_t *) buff_filtrado2, BUFFER_SAMPLE_LEN,0);
+		}
+	}
+	//tim1_cuenta = __HAL_TIM_GET_COUNTER(&htim2);
+	lberarSemaforoProc();
+
 }
 
 
@@ -347,54 +342,3 @@ void process_set_gains(){
 
 }
 
-
-
-
-
-/// Hay que convertirlos a q15
-
-//const float32_t iir_taps_CINE	[IIR_TAP_NUM_EQ] = {1.0035378522117637,-1.98280682256079,0.9795532716154106,1.9828777291113742,-0.9830202172765903,
-//											1.005307517480333,-1.9734674498154148,0.9689614064054366,1.9734674498154148,-0.9742689238857696,
-//											0.9871489298278249,-1.9071458251197513,0.9248463814189198,1.9071458251197513,-0.9119953112467447,
-//											0.9709377937722502,-1.7747224840497484,0.83004295107702,1.7747224840497484,-0.8009807448492702,
-//											1.0490228845094334,-1.483803319833424,0.7133120343437699,1.483803319833424,-0.7623349188532034,
-//											1.275738956648572,-0.6040523436846152,0.1701579641904454,0.6040523436846152,-0.4458969208390174,
-//											1.3394827017747446,0.16414835499397923,0.12596313593495098,-0.4887002536076259,-0.1408939390960488};
-//const float32_t iir_taps_ROCK	[IIR_TAP_NUM_EQ] = {1.0,-1.9796510852239366,0.9798520305684094,1.9796510852239366,-0.9798520305684094,
-//											1.005307517480333,-1.9734674498154148,0.9689614064054366,1.9734674498154148,-0.9742689238857696,
-//											1.0265588842505295,-1.9416920481180697,0.9200704940528975,1.9416920481180697,-0.9466293783034272,
-//											1.0,-1.8031815766483155,0.8298609096336507,1.8031815766483155,-0.8298609096336507,
-//											0.9532680504559645,-1.414462297957696,0.7267095218896991,1.414462297957696,-0.6799775723456635,
-//											1.1290968068756282,-0.5740715530819134,0.24503624569935156,0.5740715530819134,-0.37413305257497975,
-//											1.0,0.3084498998339442,0.11076634870281762,-0.3084498998339442,-0.11076634870281762};
-//const float32_t iir_taps_POP		[IIR_TAP_NUM_EQ] = {1.0,-1.9796510852239366,0.9798520305684094,1.9796510852239366,-0.9798520305684094,
-//											1.005307517480333,-1.9734674498154148,0.9689614064054366,1.9734674498154148,-0.9742689238857696,
-//											1.0265588842505295,-1.9416920481180697,0.9200704940528975,1.9416920481180697,-0.9466293783034272,
-//											1.0299320990635645,-1.827843653252661,0.8249557798521062,1.827843653252661,-0.8548878789156708,
-//											0.9532680504559645,-1.414462297957696,0.7267095218896991,1.414462297957696,-0.6799775723456635,
-//											0.8856636507255232,-0.5084343074801985,0.33135604520064066,0.5084343074801985,-0.217019695926164,
-//											1.0,0.3084498998339442,0.11076634870281762,-0.3084498998339442,-0.11076634870281762};
-//const float32_t iir_taps_ELECTRO	[IIR_TAP_NUM_EQ] = {1.001760796957629,-1.981299069651173,0.9797772977817074,1.981333973793491,-0.9815031905970182,
-//											1.0107957448848515,-1.9775026167584935,0.9675099847253587,1.9775026167584935,-0.9783057296102101,
-//											1.0130183701606368,-1.9319737554214733,0.92386800379332,1.9319737554214733,-0.9368863739539568,
-//											0.9709377937722502,-1.7747224840497484,0.83004295107702,1.7747224840497484,-0.8009807448492702,
-//											1.1014229857242093,-1.5123063909289807,0.6947654478198052,1.5123063909289807,-0.7961884335440143,
-//											1.275738956648572,-0.6040523436846152,0.1701579641904454,0.6040523436846152,-0.4458969208390174,
-//											1.157289495548599,0.24997746864619855,0.11646729534355592,-0.39947700210733944,-0.12425725743101422};
-//const float32_t iir_taps_VOCAL	[IIR_TAP_NUM_EQ] = {0.9982422979987072,-1.977851379102525,0.9797780004746307,1.9778165363112876,-0.9780551412645754,
-//											0.9947205035394189,-1.9630485353990421,0.9691252745504605,1.9630485353990421,-0.9638457780898795,
-//											1.0130183701606368,-1.9319737554214733,0.92386800379332,1.9319737554214733,-0.9368863739539568,
-//											1.0614664290522369,-1.8491228854981583,0.8150155232375795,1.8491228854981583,-0.8764819522898164,
-//											1.0490228845094334,-1.483803319833424,0.7133120343437699,1.483803319833424,-0.7623349188532034,
-//											0.8856636507255232,-0.5084343074801985,0.33135604520064066,0.5084343074801985,-0.217019695926164,
-//											0.8640880296990532,0.3451832956610154,0.10736920874937309,-0.21600253835165056,-0.10063799575779099};
-
-
-//// Esto hay que sacarlo e implementarlo con funciones que los calcule en el momento
-//const float32_t iir_taps_LP1	[IIR_TAP_NUM_CROSS] = {0.00019735700341214275,0,0.0003947140068242855,0.00019735700341214275,1.943806476755819,-0.9445959047694675};
-//const float32_t iir_taps_LP2	[IIR_TAP_NUM_CROSS] = {0.0011839064420396121,0,0.0023678128840792243,0.0011839064420396121,1.862368233780738,-0.8671038595488963};
-//const float32_t iir_taps_BP1	[IIR_TAP_NUM_CROSS] = {0.5458369509680533,0,0.0,-0.5458369509680533,0.8211437833546443,0.09169216101118098};
-//const float32_t iir_taps_BP2	[IIR_TAP_NUM_CROSS] = {0.4900251652308176,0,0.0,-0.4900251652308176,0.8814272214519776,-0.02416128361386568};
-//const float32_t iir_taps_HP1	[IIR_TAP_NUM_CROSS] = {0.3714253996511387,0,-0.7428507993022774,0.3714253996511387,0.43778719219258744,-0.04791440641196737};
-//const float32_t iir_taps_HP2	[IIR_TAP_NUM_CROSS] = {0.28791215498173994,0,-0.5758243099634799,0.28791215498173994,0.14629785437805412,-0.005350765548905597};
-//

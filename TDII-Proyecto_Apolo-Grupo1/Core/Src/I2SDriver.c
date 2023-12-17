@@ -124,23 +124,34 @@ size_t readData_I2S(uint8_t canal, q15_t *buff, size_t lenToRead) {
 	return i;
 }
 
-/*Modificar*/
-void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite) {
+/*Modificar*/ // los ifs
+void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite,uint8_t gain) {
 	//Valido escritura
 	if(lenToWrite>DATOS_P_CANAL)
 		return;
 
 	//Escribo en las posiciones del vector de cada ampli
-	for(uint32_t i=0; i<lenToWrite; i++) {
-		if(ampli==CHANNEL_0)
-			ptrProcessOutAB[i*2+IZQUIERDO] = datos[i];
-		if(ampli==CHANNEL_1)
-			ptrProcessOutAB[i*2+DERECHO] = datos[i];
-		if(ampli==CHANNEL_2)
-			ptrProcessOutCD[i*2+IZQUIERDO] = datos[i];
-		if(ampli==CHANNEL_3)
-			ptrProcessOutCD[i*2+DERECHO] = datos[i];
+
+
+	if(ampli==CHANNEL_0){
+		for(uint32_t i=0; i<lenToWrite; i++)
+			ptrProcessOutAB[i*2+IZQUIERDO] = (int16_t)datos[i]*gain;
 	}
+	if(ampli==CHANNEL_1){
+		for(uint32_t i=0; i<lenToWrite; i++)
+			ptrProcessOutAB[i*2+DERECHO] = (int16_t)datos[i]*gain;
+	}
+
+	if(ampli==CHANNEL_2){
+		for(uint32_t i=0; i<lenToWrite; i++)
+			ptrProcessOutCD[i*2+IZQUIERDO] = (int16_t)datos[i]*gain;
+	}
+
+	if(ampli==CHANNEL_3){
+		for(uint32_t i=0; i<lenToWrite; i++)
+			ptrProcessOutCD[i*2+DERECHO] = (int16_t)datos[i]*gain;
+	}
+
 }
 
 //#############################################################################
@@ -216,7 +227,8 @@ void task_I2S_recieve() {
 		xSemaphoreGive(semDataReadyToProc);
 
 		//Procesamiento de prueba en esta misma tarea
-		pruebaLoopback();
+		//vTaskDelay(pdMS_TO_TICKS(10));
+		//pruebaLoopback();
 	}
 }
 
@@ -237,11 +249,11 @@ void pruebaLoopback() {
 	readData_I2S(DERECHO,   dataDer, DATOS_P_CANAL);
 
 	//Escribo
-	writeData_I2S(CHANNEL_0, dataIzq, DATOS_P_CANAL);
-	writeData_I2S(CHANNEL_1, dataIzq, DATOS_P_CANAL);
+	writeData_I2S(CHANNEL_0, dataIzq, DATOS_P_CANAL,1);
+	writeData_I2S(CHANNEL_1, dataIzq, DATOS_P_CANAL,1);
 
-	writeData_I2S(CHANNEL_2, dataDer, DATOS_P_CANAL);
-	writeData_I2S(CHANNEL_3, dataDer, DATOS_P_CANAL);
+	writeData_I2S(CHANNEL_2, dataDer, DATOS_P_CANAL,1);
+	writeData_I2S(CHANNEL_3, dataDer, DATOS_P_CANAL,1);
 
 	//Libero semaforo de procesamiento
 	lberarSemaforoProc();
