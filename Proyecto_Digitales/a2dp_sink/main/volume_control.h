@@ -49,6 +49,8 @@
 
 #define GAMA_A -70 // LKFS
 
+#define MAX_LOUDNESS 1778 //lo escribo en veces 65db
+#define MIN_LOUDNESS 10// lo escribo en veces 20db
 
 typedef unsigned char uint8_t;
 typedef signed char   int8_t ;

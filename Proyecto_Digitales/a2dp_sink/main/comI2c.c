@@ -2,6 +2,7 @@
 #include "comI2c.h"
 #include "esp_a2dp_api.h"
 #include "esp_avrc_api.h"
+#include "volume_control.h"
 
 #define DEBUG 1
 
@@ -17,7 +18,8 @@ int8_t command_state;
 
 nvs_handle_t app_nvs_handle;
 const char* key = "DatosUser";
-
+extern uint8_t correccion_loudness;
+extern float loudness_target;
 
 /////////////////////////////////////// Tasks ////////////////////////////////////////////////
 void i2c_task (void* parameters){
@@ -25,7 +27,6 @@ void i2c_task (void* parameters){
 
     while(1){
         size = i2c_slave_read_buffer(I2C_SLAVE_NUM, buff_rx, 1, portMAX_DELAY);
-        printf("Prueba\n");
 
         if(size == ESP_FAIL){
             #if DEBUG
@@ -169,7 +170,35 @@ uint8_t anlyses_message(uint8_t command){
             }
             fStop = !fStop;  
         break;
-       
+        case LOUD_CONFIG_CMD:
+            
+            vTaskDelay(pdMS_TO_TICKS(100)); // Espero 300 ms para recibir todo.
+
+            #if DEBUG    
+            printf("Comando LOUDNESS\n");
+            #endif
+            err = i2c_slave_read_buffer(I2C_SLAVE_NUM, buff_rx,2, pdMS_TO_TICKS(100));
+
+            if(err == 0)
+                return ERROR;
+            
+            #if DEBUG    
+            printf("llego en loud  %i - %i\n",buff_rx[0],buff_rx[1]);
+            #endif
+            if(buff_rx[0] == 0 || buff_rx[0] == 1) // chequeo que el dato sea valido
+                correccion_loudness = buff_rx[0] ;
+            else
+                return ERROR;
+            if(buff_rx[1] <= 100){
+                loudness_target =20 * log10((buff_rx[1]* (MAX_LOUDNESS-MIN_LOUDNESS) / 100) + MIN_LOUDNESS);
+            } 
+            else{
+                return ERROR;
+            }
+            #if DEBUG    
+            printf("Se seteo el loudness en %f, y se encuentra en un estado %i\n",loudness_target,correccion_loudness);
+            #endif
+        break;
         default:
         #if DEBUG    
         printf("Comando Invalido\n");
