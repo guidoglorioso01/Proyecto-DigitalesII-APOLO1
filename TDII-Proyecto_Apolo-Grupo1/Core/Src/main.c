@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "I2CDriver.h"
 
 
 /* USER CODE END Includes */
@@ -126,30 +126,33 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
 	callbackSPITx();
 }
 
-void TouchGFXSYNC_process(void *arguments){
-	extern void touchgfxSignalVSync(void);
-
-	while(1){
-		touchgfxSignalVSync();
-		vTaskDelay(pdMS_TO_TICKS(40)); // el tick del sistema es 1ms y quiero que se actualice a 25HZ la pantalla -> suspendo la tarea durante 40ms
-
-	}
-}
+//////////////////////////Tareas///////////////////
 
 void Touchscreen_process(void *arguments){
 
 	while(1){
 		mde_TS();
-		vTaskDelay(pdMS_TO_TICKS(1));
+		vTaskDelay(pdMS_TO_TICKS(20));
 	}
 }
+
+void TouchGFXSYNC_process(void *arguments){
+	extern void touchgfxSignalVSync(void);
+
+	while(1){
+		touchgfxSignalVSync();
+		vTaskDelay(pdMS_TO_TICKS(50));
+
+	}
+}
+
+
 void SaveData_process(void *arguments){
 	get_config_esp();
 	init_userdata();
 	while(1){
 
 		xSemaphoreTake(semSaveData,portMAX_DELAY);
-
 		if(save_config_esp() == SUCCESS)
 			send_cmd_esp(SAVE_FLASH_CMD);
 
@@ -158,7 +161,6 @@ void SaveData_process(void *arguments){
 
 void FilterData_process(void *arguments){
 
-	// Deberia verificar que previamente se hayan cargado los datos.
 	vTaskDelay(pdMS_TO_TICKS(2000));
 	filter_init_system(); // inicializo los filtros
 
@@ -167,10 +169,8 @@ void FilterData_process(void *arguments){
 		// Verifico si hay datos nuevos para filtrar
 		//xSemaphoreTake(semProcessData,portMAX_DELAY);
 		process_filter();
-		//process_set_gains();
 		//xSemaphoreGive(semProcessData);
-		//vTaskDelay(pdMS_TO_TICKS(50)); // esto se tiene que remplazar y que se cuelgue las task hasta que haya llegado un paquete nuevo
-	}
+		}
 }
 
 void CalculateCoefs_process(void *arguments){
@@ -184,7 +184,25 @@ void CalculateCoefs_process(void *arguments){
 	}
 
 }
+void volume_process(void *arguments){
+	while(1){
+		process_set_gains();
+		vTaskDelay(pdMS_TO_TICKS(50));
+	}
 
+}
+
+extern QueueHandle_t queue_progres_var;
+void upd_progressVar_process(void *arguments){
+	uint8_t valor_progress=0;
+	while(1){
+		valor_progress = get_music_estate_esp();
+//		valor_progress++;
+//		valor_progress %= 100;
+		xQueueSend(queue_progres_var,&valor_progress,portMAX_DELAY);
+		vTaskDelay(pdMS_TO_TICKS(500));
+	}
+}
 /* USER CODE END 0 */
 
 /**
@@ -282,14 +300,15 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
 #endif
 
-
-  xTaskCreate(TouchGFXSYNC_process, "GFX SYNC", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
   xTaskCreate(Touchscreen_process, "UPD TS", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
-  xTaskCreate(TouchGFX_Task, "UPD GFX", 2000, NULL, tskIDLE_PRIORITY + 2, NULL);
-  xTaskCreate(SaveData_process, "SaveData", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 4 ,NULL);
-  xTaskCreate(task_I2S_recieve, "Audio In", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3 ,NULL);	// Recepcion datos I2S -> Prioridad una menos que la de procesamiento
-  xTaskCreate(FilterData_process, "ProcessData", 2000, NULL, tskIDLE_PRIORITY + 3 ,NULL); 		// se le debe dar la mayor prioridad
-  xTaskCreate(CalculateCoefs_process, "CalcCoefsData", 500, NULL, tskIDLE_PRIORITY + 4 ,NULL); 	// Process que calcula los coeficientes aun mas prioridad para tenerlos listos antes de convertir
+  xTaskCreate(SaveData_process, "SaveData", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
+  xTaskCreate(volume_process, "volSYS", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
+  xTaskCreate(upd_progressVar_process, "progVar", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
+  xTaskCreate(TouchGFXSYNC_process, "GFX SYNC", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3, NULL);
+  xTaskCreate(TouchGFX_Task, "UPD GFX", 4000, NULL, tskIDLE_PRIORITY + 2, NULL);
+  xTaskCreate(task_I2S_recieve, "Audio In", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2 ,NULL);	// Recepcion datos I2S -> Prioridad una menos que la de procesamiento
+  xTaskCreate(FilterData_process, "ProcessData", 2000, NULL, tskIDLE_PRIORITY + 2 ,NULL); 		// se le debe dar la mayor prioridad
+  xTaskCreate(CalculateCoefs_process, "CalcCoefsData", 500, NULL, tskIDLE_PRIORITY + 3 ,NULL); 	// Process que calcula los coeficientes aun mas prioridad para tenerlos listos antes de convertir
 
 
   /* add threads, ... */

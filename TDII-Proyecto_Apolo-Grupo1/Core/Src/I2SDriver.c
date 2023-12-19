@@ -125,7 +125,7 @@ size_t readData_I2S(uint8_t canal, q15_t *buff, size_t lenToRead) {
 }
 
 /*Modificar*/ // los ifs
-void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite,uint8_t gain) {
+void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite,float gain) {
 	//Valido escritura
 	if(lenToWrite>DATOS_P_CANAL)
 		return;
@@ -177,7 +177,9 @@ void transmitirDatos() {
 //#############################################################################
 
 //I2S 2
+
 void callbackI2SRx() {
+
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	xSemaphoreGiveFromISR( semRx_I2S, &xHigherPriorityTaskWoken );
 	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
@@ -203,6 +205,7 @@ void callbackSPITx() {
 void task_I2S_recieve() {
 	while(1) {
 		//Proceso
+
 		xSemaphoreTake(semDataReadyToSendDMA,portMAX_DELAY);
 
 		//Transmito
@@ -219,16 +222,16 @@ void task_I2S_recieve() {
 			//give(semTxCD_I2S)
 		//En funcion de procesamiento
 			//give(semProc_I2S) con lberarSemaforoProc()
+		xSemaphoreGive(semDataReadyToProc);
 
 		recibirDatos();
+
 		transmitirDatos();
 
 		//Aviso que ya podés volver a leer
-		xSemaphoreGive(semDataReadyToProc);
-
 		//Procesamiento de prueba en esta misma tarea
-		//vTaskDelay(pdMS_TO_TICKS(10));
-		//pruebaLoopback();
+
+	//pruebaLoopback();
 	}
 }
 

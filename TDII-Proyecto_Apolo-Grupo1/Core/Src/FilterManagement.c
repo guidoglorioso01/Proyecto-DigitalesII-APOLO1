@@ -6,7 +6,7 @@
  */
 #include <FilterManagement.h>
 #include "I2SDriver.h"
-
+#include "I2CDriver.h"
 
 //#############################################################################
 // Variables Globales
@@ -47,15 +47,29 @@ void filter_function_eq(q15_t *buff_in,q15_t *buff_out){
 	 * debo verificar que si el filtro tiene ganancia que no me haga overflow
 	 *
 	 * */
+
+
 	UserData buff;
 	get_user_data(&buff);
 
 	if(buff.general_config.equalization_type == EQ_PROF_PLANO){
-		memcpy(buff_out,buff_in,BLOCK_SIZE_FLOAT);
+		for(int i=0;i<BUFFER_SAMPLE_LEN;i++)
+			buff_out[i] = buff_in[i];
 		return;
 	}
-
-	arm_biquad_cascade_df1_q15(&iir_eq_settings, buff_in, buff_out, BUFFER_SAMPLE_LEN);
+	int16_t check = buff_in[0];
+	uint8_t flag =0;
+	for(int i=0;i<BUFFER_SAMPLE_LEN;i++){
+		if(buff_in[i] != check ){
+			flag = 1;
+			break;
+		}
+	}
+	if(flag == 1)
+		arm_biquad_cascade_df1_q15(&iir_eq_settings, buff_in, buff_out, BUFFER_SAMPLE_LEN);
+	else
+		for(int i=0;i<BUFFER_SAMPLE_LEN;i++)
+			buff_out[i] = 0;
 
 }
 
@@ -232,8 +246,8 @@ void filter_init_system(){
 //#############################################################################
 
 
-uint32_t tim1_cuenta=0;
-extern TIM_HandleTypeDef htim2;
+//uint32_t tim1_cuenta=0;
+//extern TIM_HandleTypeDef htim2;
 
 /*
  * // Buffer entrada de audio
@@ -270,17 +284,17 @@ void process_filter(){
 
 			if(left_right == RIGHT_CHANNEL_OUTPUT){
 
-				//filter_function_co(channel,buff_filtrado2,buff_filtrado1);
+				filter_function_co(channel,buff_filtrado2,buff_filtrado1);
 
-				writeData_I2S(channel,(int16_t *) buff_filtrado2, BUFFER_SAMPLE_LEN,1); // tegno que poner el buff1
+				writeData_I2S(channel,(int16_t *) buff_filtrado1, BUFFER_SAMPLE_LEN,gain_channels[channel]); // tegno que poner el buff1
 				// FALTA APLICAR GANANCIA gain_channels[channel]
 
 			}
 		}
 	}
 
-	//3 Realizo el filtrado de ecualizacion (canal Izquierdo)
-
+//	//3 Realizo el filtrado de ecualizacion (canal Izquierdo)
+//
 	readData_I2S(IZQUIERDO, buff_filtrado1, BUFFER_SAMPLE_LEN);
 
 	filter_function_eq(buff_filtrado1,buff_filtrado2);
@@ -295,9 +309,9 @@ void process_filter(){
 			uint8_t left_right = buff.audio_output[i].channel_audio;
 
 			if(left_right == LEFT_CHANNEL_OUTPUT){
-				//filter_function_co(channel,buff_filtrado2,buff_filtrado1);
+				filter_function_co(channel,buff_filtrado2,buff_filtrado1);
 
-				writeData_I2S(channel,(int16_t *) buff_filtrado2, BUFFER_SAMPLE_LEN,1);
+				writeData_I2S(channel,(int16_t *) buff_filtrado1, BUFFER_SAMPLE_LEN,gain_channels[channel]);
 				// FALTA APLICAR GANANCIA gain_channels[channel]
 
 			}
@@ -316,29 +330,44 @@ void process_filter(){
 
 }
 
+// Hacer en una tarea aparte
 
 void process_set_gains(){
 
 	UserData buff;
-	get_user_data(&buff);
 	float setpoint,gain_system;
+	static float prev_setpoint=0;
+	static uint8_t prev_estado_loud=0;
+	uint8_t estado_loudness;
 
+	get_user_data(&buff);
 	setpoint = (float)(buff.general_config.max_volume * buff.main_volume)/10000.0; // Obtengo el volumen seteado por el usuario (por defecto esta en %)
+	estado_loudness = buff.general_config.loudness_state;
 
-	if(buff.general_config.loudness_state == OFF){
+	if(setpoint != prev_setpoint || estado_loudness != prev_estado_loud){
+		prev_setpoint = setpoint;
+		prev_estado_loud = estado_loudness;
 		gain_system = setpoint;
-	}
-	else{
-		gain_system = setpoint;
-		//gain_system = loudness_correction();
+
+		if(estado_loudness == OFF){
+			gain_channels[0] = gain_system * (float)(buff.audio_output[0].channel_volume / 100.0);
+			gain_channels[1] = gain_system * (float)(buff.audio_output[1].channel_volume / 100.0);
+			gain_channels[2] = gain_system * (float)(buff.audio_output[2].channel_volume / 100.0);
+			gain_channels[3] = gain_system * (float)(buff.audio_output[3].channel_volume / 100.0);
+			send_volume_esp((float)gain_system*100,0); // Apago la correccion de loudness
+		}
+		else{
+			gain_channels[0] = (float)(buff.audio_output[0].channel_volume / 100.0);
+			gain_channels[1] = (float)(buff.audio_output[1].channel_volume / 100.0);
+			gain_channels[2] = (float)(buff.audio_output[2].channel_volume / 100.0);
+			gain_channels[3] = (float)(buff.audio_output[3].channel_volume / 100.0);
+			send_volume_esp((float)gain_system*100,1); // Prendo la correccion de loudness
+		}
 	}
 
 	// Calculo la ganancia de cada canal
 
-	gain_channels[0] = gain_system * (float)(buff.audio_output[0].channel_volume / 100.0);
-	gain_channels[1] = gain_system * (float)(buff.audio_output[1].channel_volume / 100.0);
-	gain_channels[2] = gain_system * (float)(buff.audio_output[2].channel_volume / 100.0);
-	gain_channels[3] = gain_system * (float)(buff.audio_output[3].channel_volume / 100.0);
+
 
 }
 

@@ -95,6 +95,18 @@ i2s_chan_handle_t tx_chan = NULL;
 dac_continuous_handle_t tx_chan;
 #endif
 
+extern uint32_t tiempo_total;
+extern uint32_t tiempo_actual;
+uint32_t stringToUint32(uint8_t* str) {
+    // Usa la función strtoul para convertir el string a un unsigned long
+    unsigned long result = strtoul((const char*)str, NULL, 10);
+
+    // Convierte el resultado a uint32_t
+    uint32_t result_uint32 = (uint32_t)result;
+
+    return result_uint32;
+}
+
 /********************************
  * STATIC FUNCTION DEFINITIONS
  *******************************/
@@ -115,7 +127,8 @@ static void bt_av_new_track(void)
     uint8_t attr_mask = ESP_AVRC_MD_ATTR_TITLE |
                         ESP_AVRC_MD_ATTR_ARTIST |
                         ESP_AVRC_MD_ATTR_ALBUM |
-                        ESP_AVRC_MD_ATTR_GENRE;
+                        ESP_AVRC_MD_ATTR_GENRE |
+                        ESP_AVRC_MD_ATTR_PLAYING_TIME;
     esp_avrc_ct_send_metadata_cmd(APP_RC_CT_TL_GET_META_DATA, attr_mask);
 
     /* register notification if peer support the event_id */
@@ -161,6 +174,7 @@ static void bt_av_notify_evt_handler(uint8_t event_id, esp_avrc_rn_param_t *even
     /* when track playing position changed, this event comes */
     case ESP_AVRC_RN_PLAY_POS_CHANGED:
         ESP_LOGI(BT_AV_TAG, "Play position changed: %"PRIu32"-ms", event_parameter->play_pos);
+        tiempo_actual = event_parameter->play_pos;
         bt_av_play_pos_changed();
         break;
     /* others */
@@ -409,6 +423,7 @@ static void bt_av_hdl_a2d_evt(uint16_t event, void *p_param)
     }
 }
 
+
 static void bt_av_hdl_avrc_ct_evt(uint16_t event, void *p_param)
 {
     ESP_LOGD(BT_RC_CT_TAG, "%s event: %d", __func__, event);
@@ -440,6 +455,9 @@ static void bt_av_hdl_avrc_ct_evt(uint16_t event, void *p_param)
     /* when metadata responsed, this event comes */
     case ESP_AVRC_CT_METADATA_RSP_EVT: {
         ESP_LOGI(BT_RC_CT_TAG, "AVRC metadata rsp: attribute id 0x%x, %s", rc->meta_rsp.attr_id, rc->meta_rsp.attr_text);
+        if(rc->meta_rsp.attr_id == ESP_AVRC_MD_ATTR_PLAYING_TIME){
+            tiempo_total =stringToUint32( rc->meta_rsp.attr_text);
+        }
         free(rc->meta_rsp.attr_text);
         break;
     }

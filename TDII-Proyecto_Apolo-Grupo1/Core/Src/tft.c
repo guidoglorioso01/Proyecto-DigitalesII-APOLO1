@@ -19,7 +19,7 @@ void pushCommand(uint16_t cmd, uint8_t * block, int8_t N) { WriteCmdParamN(cmd, 
 
 static uint16_t read16bits(void);
 
-#define write8(x)     { write_8(x);  WR_STROBE; WR_IDLE; } //WRITE_DELAY;
+#define write8(x)     { write_8(x); WRITE_DELAY; WR_STROBE; WR_IDLE; } //
 #define write16(x)    { uint8_t h = (x)>>8, l = x; write8(h); write8(l); }
 #define READ_8(dst)   { RD_STROBE; READ_DELAY; dst = read_8(); RD_IDLE; RD_IDLE; } // read 250ns after RD_ACTIVE goes low
 #define READ_16(dst)  { uint8_t hi; READ_8(hi); READ_8(dst); dst |= (hi << 8); }
@@ -365,7 +365,7 @@ void drawRGBBitmap(uint16_t x, uint16_t y, uint16_t *bitmap, uint16_t w, uint16_
 	    //    w = end;
 	    //}
 	    uint8_t hi , lo;
-	    uint16_t cant;
+	    uint32_t cant;
 	    const uint32_t total_data = h * w;
 	    for(cant = 0;cant < total_data ;cant++) {
 				hi = bitmap[cant] >> 8;

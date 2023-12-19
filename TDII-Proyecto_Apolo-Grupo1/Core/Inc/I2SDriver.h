@@ -54,7 +54,7 @@ void transmitirDatos();
 //Funciones del usuario de la API
 //#############################################################################
 size_t readData_I2S(uint8_t canal, q15_t *buff, size_t lenToRead);
-void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite,uint8_t gain);
+void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite,float gain);
 void lberarSemaforoProc();
 
 //#############################################################################

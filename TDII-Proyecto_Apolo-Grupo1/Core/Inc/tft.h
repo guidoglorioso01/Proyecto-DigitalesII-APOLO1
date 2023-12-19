@@ -163,7 +163,7 @@ GPIOC->BSRR = (((d) & (1<<1)) << 6); \
 
 
 /************************** For 84 MHZ ****************************/
-#define WRITE_DELAY { WR_ACTIVE; } // !!!! Nota lo cambie estaba en WR_ACTIVE2 !!!!!
+#define WRITE_DELAY { WR_ACTIVE2; } // !!!! Nota lo cambie estaba en WR_ACTIVE2 !!!!!
 #define READ_DELAY  { RD_ACTIVE8; }
 
 

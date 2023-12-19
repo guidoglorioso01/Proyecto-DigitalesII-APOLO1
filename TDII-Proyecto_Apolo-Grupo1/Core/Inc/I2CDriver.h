@@ -30,6 +30,8 @@
 #define NEXT_SONG_CMD 0x15
 #define PREVIOUS_SONG_CMD 0x16
 #define STOP_SONG_CMD 0x17
+#define LOUD_CONFIG_CMD 0x18
+#define GET_MUSIC_STATE_CMD 0x19
 
 #define COMAND_FAILED 0xFF
 #define COMAND_OK 0x33
@@ -43,8 +45,9 @@ typedef union  {
 uint8_t save_config_esp();
 uint8_t get_config_esp();
 uint8_t send_cmd_esp(uint8_t CMD);
+uint8_t send_volume_esp(uint8_t volume, uint8_t ctr_loudness_state);
 void give_sem_save_data();
-
+uint8_t get_music_estate_esp();
 
 
 extern I2C_HandleTypeDef hi2c1;

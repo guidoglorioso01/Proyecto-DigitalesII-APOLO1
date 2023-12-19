@@ -22,6 +22,7 @@
 #define PREVIOUS_SONG_CMD 0x16
 #define STOP_SONG_CMD 0x17
 #define LOUD_CONFIG_CMD 0x18
+#define GET_MUSIC_STATE_CMD 0x19
 
 #define DEBUG 1 // Poner en 1 para debug
 #define SLAVE_ADDR 0x18
