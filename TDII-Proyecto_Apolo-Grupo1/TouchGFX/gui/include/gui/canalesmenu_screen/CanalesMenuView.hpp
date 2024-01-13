@@ -1,10 +1,10 @@
 #ifndef CANALESMENUVIEW_HPP
 #define CANALESMENUVIEW_HPP
 
+#include <Control_DatosUsuario.h>
 #include <gui_generated/canalesmenu_screen/CanalesMenuViewBase.hpp>
 #include <gui/canalesmenu_screen/CanalesMenuPresenter.hpp>
 #include <texts/TextKeysAndLanguages.hpp>
-#include "user_info.h"
 
 
 

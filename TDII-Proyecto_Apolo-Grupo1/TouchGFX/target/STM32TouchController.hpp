@@ -24,7 +24,7 @@
 
 #ifndef STM32TOUCHCONTROLLER_HPP
 #define STM32TOUCHCONTROLLER_HPP
-#include "touchScreen.h"
+#include <Driver_TouchScreen.h>
 #include <platform/driver/touch/TouchController.hpp>
 
 /**

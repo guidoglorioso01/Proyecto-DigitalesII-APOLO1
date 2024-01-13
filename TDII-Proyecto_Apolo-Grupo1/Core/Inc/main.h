@@ -32,12 +32,9 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include "user_info.h"
-#include "tft.h"
-#include "I2CDriver.h"
-#include "I2SDriver.h"
-#include "touchScreen.h"
-#include "FilterManagement.h"
+
+
+
 
 /* USER CODE END Includes */
 

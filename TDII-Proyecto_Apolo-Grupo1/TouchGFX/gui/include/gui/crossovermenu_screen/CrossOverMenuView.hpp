@@ -1,10 +1,10 @@
 #ifndef CROSSOVERMENUVIEW_HPP
 #define CROSSOVERMENUVIEW_HPP
 
+#include <Control_DatosUsuario.h>
 #include <gui_generated/crossovermenu_screen/CrossOverMenuViewBase.hpp>
 #include <gui/crossovermenu_screen/CrossOverMenuPresenter.hpp>
 #include <texts/TextKeysAndLanguages.hpp>
-#include "user_info.h"
 
 class CrossOverMenuView : public CrossOverMenuViewBase
 {

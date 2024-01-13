@@ -1,11 +1,11 @@
 #ifndef GENERALMENUVIEW_HPP
 #define GENERALMENUVIEW_HPP
 
+#include <Control_DatosUsuario.h>
 #include <gui_generated/generalmenu_screen/GeneralMenuViewBase.hpp>
 #include <gui/generalmenu_screen/GeneralMenuPresenter.hpp>
 
 #include <texts/TextKeysAndLanguages.hpp>
-#include "user_info.h"
 
 class GeneralMenuView : public GeneralMenuViewBase
 {

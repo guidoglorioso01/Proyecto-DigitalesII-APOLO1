@@ -41,8 +41,13 @@ using namespace touchgfx;
 //#warning "A user must call touchgfx::startNewTransfer(); once touchgfxDisplayDriverTransmitBlock() has succesfully sent a block."
 //#warning "A user must implement C-methods touchgfxDisplayDriverTransmitActive() and touchgfxDisplayDriverTransmitBlock() used by the Partial Framebuffer Strategy."
 
+extern "C"{
+#include <Driver_Display.h>
+}
+
 void TouchGFXHAL::initialize()
 {
+
     // Calling parent implementation of initialize().
     //
     // To overwrite the generated implementation, omit call to parent function
@@ -50,6 +55,8 @@ void TouchGFXHAL::initialize()
     // Please note, HAL::initialize() must be called to initialize the framework.
 
     TouchGFXGeneratedHAL::initialize();
+
+    tft_init ();
 }
 
 /**

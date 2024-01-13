@@ -1,10 +1,10 @@
 #ifndef MAINSCREENVIEW_HPP
 #define MAINSCREENVIEW_HPP
 
+#include <Control_DatosUsuario.h>
+#include <Driver_I2C.h>
 #include <gui_generated/mainscreen_screen/MainScreenViewBase.hpp>
 #include <gui/mainscreen_screen/MainScreenPresenter.hpp>
-#include "user_info.h"
-#include "I2CDriver.h"
 
 
 

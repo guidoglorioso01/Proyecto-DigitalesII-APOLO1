@@ -1,9 +1,9 @@
 #ifndef ECUALIZADORMENUVIEW_HPP
 #define ECUALIZADORMENUVIEW_HPP
 
+#include <Control_DatosUsuario.h>
 #include <gui_generated/ecualizadormenu_screen/EcualizadorMenuViewBase.hpp>
 #include <gui/ecualizadormenu_screen/EcualizadorMenuPresenter.hpp>
-#include "user_info.h"
 
 
 class EcualizadorMenuView : public EcualizadorMenuViewBase

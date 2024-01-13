@@ -1,6 +1,6 @@
+#include <Driver_I2C.h>
 #include <gui/mainscreen_screen/MainScreenView.hpp>
 #include <texts/TextKeysAndLanguages.hpp>
-#include "I2CDriver.h"
 
 MainScreenView::MainScreenView()
 {

@@ -1,9 +1,9 @@
 #ifndef EDITARECUALIZADORVIEW_HPP
 #define EDITARECUALIZADORVIEW_HPP
 
+#include <Control_DatosUsuario.h>
 #include <gui_generated/editarecualizador_screen/EditarEcualizadorViewBase.hpp>
 #include <gui/editarecualizador_screen/EditarEcualizadorPresenter.hpp>
-#include "user_info.h"
 
 
 extern SemaphoreHandle_t semCalcCoefs;

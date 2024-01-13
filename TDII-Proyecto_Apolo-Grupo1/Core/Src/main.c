@@ -17,14 +17,13 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <process.h>
 #include "main.h"
 #include "cmsis_os.h"
 #include "app_touchgfx.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "I2CDriver.h"
-
 
 /* USER CODE END Includes */
 
@@ -65,11 +64,9 @@ UART_HandleTypeDef huart2;
 
 osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
-
 SemaphoreHandle_t semSaveData;
 SemaphoreHandle_t semProcessData; // semaforo para indicar si se puede tocar o no el buffer de entrada/salida
 SemaphoreHandle_t semCalcCoefs;
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -90,18 +87,11 @@ void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
-void TouchGFXSYNC_process(void *arguments);
-void Touchscreen_process(void *arguments);
-void SaveData_process(void *arguments);
-void FilterData_process(void *arguments);
-void CalculateCoefs_process(void *arguments);
 
-extern void TouchGFX_Task(void const *argument);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint32_t ID =0;
 
 /*
 uint32_t tim1_cuenta=0;
@@ -126,83 +116,7 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
 	callbackSPITx();
 }
 
-//////////////////////////Tareas///////////////////
 
-void Touchscreen_process(void *arguments){
-
-	while(1){
-		mde_TS();
-		vTaskDelay(pdMS_TO_TICKS(20));
-	}
-}
-
-void TouchGFXSYNC_process(void *arguments){
-	extern void touchgfxSignalVSync(void);
-
-	while(1){
-		touchgfxSignalVSync();
-		vTaskDelay(pdMS_TO_TICKS(50));
-
-	}
-}
-
-
-void SaveData_process(void *arguments){
-	get_config_esp();
-	init_userdata();
-	while(1){
-
-		xSemaphoreTake(semSaveData,portMAX_DELAY);
-		if(save_config_esp() == SUCCESS)
-			send_cmd_esp(SAVE_FLASH_CMD);
-
-	}
-}
-
-void FilterData_process(void *arguments){
-
-	vTaskDelay(pdMS_TO_TICKS(2000));
-	filter_init_system(); // inicializo los filtros
-
-	while(1){
-
-		// Verifico si hay datos nuevos para filtrar
-		//xSemaphoreTake(semProcessData,portMAX_DELAY);
-		process_filter();
-		//xSemaphoreGive(semProcessData);
-		}
-}
-
-void CalculateCoefs_process(void *arguments){
-	// modificar esto para que solo calcule los coef de quien haya cambiado.
-
-	while(1){
-		xSemaphoreTake(semCalcCoefs,portMAX_DELAY);
-		//xSemaphoreTake(semProcessData,portMAX_DELAY);
-		filter_init_system();
-		//xSemaphoreGive(semProcessData);
-	}
-
-}
-void volume_process(void *arguments){
-	while(1){
-		process_set_gains();
-		vTaskDelay(pdMS_TO_TICKS(50));
-	}
-
-}
-
-extern QueueHandle_t queue_progres_var;
-void upd_progressVar_process(void *arguments){
-	uint8_t valor_progress=0;
-	while(1){
-		valor_progress = get_music_estate_esp();
-//		valor_progress++;
-//		valor_progress %= 100;
-		xQueueSend(queue_progres_var,&valor_progress,portMAX_DELAY);
-		vTaskDelay(pdMS_TO_TICKS(500));
-	}
-}
 /* USER CODE END 0 */
 
 /**
@@ -232,7 +146,6 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
-
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -252,14 +165,6 @@ int main(void)
   MX_TouchGFX_PreOSInit();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start(&htim2); // lo uso para medir tiempos
-  // Nota cada vez que regenero codigo se borra de la funcion de arriba el siguiente codigo
-  /*
-	uint32_t ID = readID();
-	HAL_Delay(100);
-	tft_init (ID);
-	setRotation(1);
-  */
-
 
   /* USER CODE END 2 */
 
@@ -269,17 +174,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
-
-  semProcessData = xSemaphoreCreateBinary();
-  semSaveData = xSemaphoreCreateBinary();
-  semCalcCoefs = xSemaphoreCreateBinary();
-
-  xSemaphoreGive(semSaveData);
-  xSemaphoreGive(semProcessData);
-  xSemaphoreTake(semCalcCoefs,0);
-
-  initI2SDriver();
-
+  init_semaphores();
 
   /* USER CODE END RTOS_SEMAPHORES */
 
@@ -300,16 +195,7 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
 #endif
 
-  xTaskCreate(Touchscreen_process, "UPD TS", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
-  xTaskCreate(SaveData_process, "SaveData", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
-  xTaskCreate(volume_process, "volSYS", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
-  //xTaskCreate(upd_progressVar_process, "progVar", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
-  xTaskCreate(TouchGFXSYNC_process, "GFX SYNC", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3, NULL);
-  xTaskCreate(TouchGFX_Task, "UPD GFX", 4000, NULL, tskIDLE_PRIORITY + 2, NULL);
-  xTaskCreate(task_I2S_recieve, "Audio In", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2 ,NULL);	// Recepcion datos I2S -> Prioridad una menos que la de procesamiento
-  xTaskCreate(FilterData_process, "ProcessData", 2000, NULL, tskIDLE_PRIORITY + 2 ,NULL); 		// se le debe dar la mayor prioridad
-  xTaskCreate(CalculateCoefs_process, "CalcCoefsData", 500, NULL, tskIDLE_PRIORITY + 3 ,NULL); 	// Process que calcula los coeficientes aun mas prioridad para tenerlos listos antes de convertir
-
+  init_tasks();
 
   /* add threads, ... */
   vTaskStartScheduler();

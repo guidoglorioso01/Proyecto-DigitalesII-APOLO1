@@ -2,7 +2,7 @@
  * Pero, 2021
  */
 
-#include "tft.h"
+#include <Driver_Display.h>
 #include "TouchGFX_DataTransfer.h"
 
 extern void DisplayDriver_TransferCompleteCallback();

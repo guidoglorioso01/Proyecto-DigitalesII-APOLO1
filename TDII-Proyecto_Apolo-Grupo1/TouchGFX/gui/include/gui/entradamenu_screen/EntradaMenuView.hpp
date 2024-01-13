@@ -1,10 +1,10 @@
 #ifndef ENTRADAMENUVIEW_HPP
 #define ENTRADAMENUVIEW_HPP
 
+#include <Control_DatosUsuario.h>
 #include <gui_generated/entradamenu_screen/EntradaMenuViewBase.hpp>
 #include <gui/entradamenu_screen/EntradaMenuPresenter.hpp>
 //#include <string>
-#include "user_info.h"
 #include <texts/TextKeysAndLanguages.hpp>
 
 

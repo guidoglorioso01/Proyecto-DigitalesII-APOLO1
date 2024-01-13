@@ -8,7 +8,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2023 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -23,7 +23,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "tft.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/
@@ -64,10 +63,6 @@ void MX_TouchGFX_PreOSInit(void)
  */
 void MX_TouchGFX_Init(void)
 {
-	uint32_t ID = readID();
-	HAL_Delay(100);
-	tft_init (ID);
-	setRotation(1);
   // Calling forward to touchgfx_init in C++ domain
   touchgfx_components_init();
   touchgfx_init();
