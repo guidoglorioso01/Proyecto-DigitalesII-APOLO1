@@ -26,7 +26,7 @@ void init_userdata(){
 
 		//inicializo entrada de audio
 
-		user_data.audio_input.type_in = AUX;
+		user_data.audio_input.type_in = BLUT;
 		user_data.audio_input.channel = STEREO_CHANNEL_INPUT;
 		user_data.audio_input.channel_balance = 0; // va de -50 a 50
 
@@ -69,7 +69,6 @@ void init_userdata(){
 		user_data.audio_output_pers[3] = user_data.audio_output[3];
 
 		user_data.channelInUse = CHANNEL_0;
-		//save_user_data();
 
 		user_data.Isinitailized = INITIALIZED;
 	}
@@ -87,7 +86,9 @@ void config_eq(int8_t *values,Equalizer *position){
 	position->_16000hz 	= values[6]; //dB
 }
 
+// Pone toda la configuracion con los datos de fabrica
 void reset_userdata(){
+	user_data.Isinitailized = UNINITIALIZED;
 	init_userdata();
 }
 

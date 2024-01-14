@@ -106,8 +106,8 @@ void GeneralMenuView::UpdateTypeSystem(){
 			buff_data.audio_output[1].channel_audio = RIGHT_CHANNEL_OUTPUT;
 			buff_data.audio_output[2].channel_audio = LEFT_CHANNEL_OUTPUT;
 			buff_data.audio_output[3].channel_audio = RIGHT_CHANNEL_OUTPUT;
-			buff_data.audio_output[0].type_equalizer = TYPE_HP1;
-			buff_data.audio_output[1].type_equalizer = TYPE_HP1;
+			buff_data.audio_output[0].type_equalizer = TYPE_FLAT;
+			buff_data.audio_output[1].type_equalizer = TYPE_FLAT;
 			buff_data.audio_output[2].type_equalizer = TYPE_FLAT;
 			buff_data.audio_output[3].type_equalizer = TYPE_FLAT;
 			break;
@@ -136,8 +136,8 @@ void GeneralMenuView::UpdateTypeSystem(){
 			buff_data.audio_output[1].channel_audio = RIGHT_CHANNEL_OUTPUT;
 			buff_data.audio_output[2].channel_audio = LEFT_CHANNEL_OUTPUT; // Hay que implentar el MONO
 			buff_data.audio_output[3].channel_audio = RIGHT_CHANNEL_OUTPUT;
-			buff_data.audio_output[0].type_equalizer = TYPE_HP1;
-			buff_data.audio_output[1].type_equalizer = TYPE_HP1;
+			buff_data.audio_output[0].type_equalizer = TYPE_FLAT;
+			buff_data.audio_output[1].type_equalizer = TYPE_FLAT;
 			buff_data.audio_output[2].type_equalizer = TYPE_HP1;
 			buff_data.audio_output[3].type_equalizer = TYPE_FLAT;
 			break;

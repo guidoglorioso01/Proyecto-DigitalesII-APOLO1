@@ -2,6 +2,9 @@
 #include <gui/mainscreen_screen/MainScreenView.hpp>
 #include <texts/TextKeysAndLanguages.hpp>
 
+#include "Control_ProcesamientoAudio.h"
+
+
 MainScreenView::MainScreenView()
 {
 	state_volume_butt = false;
@@ -13,7 +16,10 @@ void MainScreenView::setupScreen()
     state_volume_butt = false;
     backgroundVolume.setVisible(false);
     volumeSlider.setVisible(false);
+
+
     give_sem_save_data();
+    give_sem_save_volume();
 
     MainScreenViewBase::setupScreen();
 }
@@ -26,11 +32,7 @@ void MainScreenView::tearDownScreen()
 
 // Button next press
 void MainScreenView::function6() {
-//	static uint8_t prueba = 0;
-//	prueba = !prueba;
-//	if(prueba){
-//		this->
-//	}
+
 	send_cmd_esp(NEXT_SONG_CMD);
 }
 
@@ -57,7 +59,7 @@ void MainScreenView::function12() {
 // Button volume press
 void MainScreenView::function3()
 {
-
+	get_user_data(&buff_data);
 	if(state_volume_butt == false){
 		// boton presionado para mostrar slider
 	    backgroundVolume.setVisible(true);
@@ -82,6 +84,7 @@ void MainScreenView::volumeConfirmed(int value)
 	buff_data.main_volume = value;
 	set_user_data(buff_data);
 	this->function3();
+	give_sem_save_volume();
 }
 
 void MainScreenView::update_progess_music(unsigned char valor){

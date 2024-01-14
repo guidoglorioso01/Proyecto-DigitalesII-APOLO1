@@ -37,10 +37,10 @@ uint8_t *volume_control_changeVolume(const uint8_t *data, uint8_t *outputData, s
     for (h = 0; h < size; h += numBytesShifted) {
 
         pcmData = ((uint16_t) data[h +1 ] << 8) | data[h];
-        //if(correccion_loudness == 0) // verifico si esta activado
+        if(correccion_loudness == 0) // verifico si esta activado
             buff =(float) (pcmData * 1); // correccion
-        // else
-        //     buff =(float) (pcmData * correccion); // correccion
+        else
+            buff =(float) (pcmData * correccion); // correccion
         pcmData =(int16_t) buff;
         outputData[h+1] = pcmData >> 8;
         outputData[h] = pcmData;

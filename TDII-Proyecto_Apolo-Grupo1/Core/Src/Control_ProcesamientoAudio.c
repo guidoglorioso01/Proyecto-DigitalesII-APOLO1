@@ -11,6 +11,7 @@
 //#############################################################################
 // Variables Globales
 //#############################################################################
+extern SemaphoreHandle_t semCalcVolume;
 
 q15_t Coef_IIR_EQ[IIR_TAP_NUM_EQ];
 q15_t iir_taps_CO0	[IIR_TAP_NUM_CROSS] ;
@@ -350,39 +351,30 @@ void process_filter(){
 void process_set_gains(){
 
 	UserData buff;
-	float setpoint,gain_system;
-	static float prev_setpoint=0;
-	static uint8_t prev_estado_loud=0;
+	float gain_system;
 	uint8_t estado_loudness;
 
 	get_user_data(&buff);
-	setpoint = (float)(buff.general_config.max_volume * buff.main_volume)/10000.0; // Obtengo el volumen seteado por el usuario (por defecto esta en %)
+	gain_system = (float)(buff.general_config.max_volume * buff.main_volume)/10000.0; // Obtengo el volumen seteado por el usuario (por defecto esta en %)
 	estado_loudness = buff.general_config.loudness_state;
 
-	if(setpoint != prev_setpoint || estado_loudness != prev_estado_loud){
-		prev_setpoint = setpoint;
-		prev_estado_loud = estado_loudness;
-		gain_system = setpoint;
 
-		if(estado_loudness == OFF){
-			gain_channels[0] = gain_system * (float)(buff.audio_output[0].channel_volume / 100.0);
-			gain_channels[1] = gain_system * (float)(buff.audio_output[1].channel_volume / 100.0);
-			gain_channels[2] = gain_system * (float)(buff.audio_output[2].channel_volume / 100.0);
-			gain_channels[3] = gain_system * (float)(buff.audio_output[3].channel_volume / 100.0);
-			send_volume_esp((float)gain_system*100,0); // Apago la correccion de loudness
-		}
-		else{
-			gain_channels[0] = (float)(buff.audio_output[0].channel_volume / 100.0);
-			gain_channels[1] = (float)(buff.audio_output[1].channel_volume / 100.0);
-			gain_channels[2] = (float)(buff.audio_output[2].channel_volume / 100.0);
-			gain_channels[3] = (float)(buff.audio_output[3].channel_volume / 100.0);
-			send_volume_esp((float)gain_system*100,1); // Prendo la correccion de loudness
-		}
+	if(estado_loudness == OFF){
+		gain_channels[0] = gain_system * (float)(buff.audio_output[0].channel_volume / 100.0);
+		gain_channels[1] = gain_system * (float)(buff.audio_output[1].channel_volume / 100.0);
+		gain_channels[2] = gain_system * (float)(buff.audio_output[2].channel_volume / 100.0);
+		gain_channels[3] = gain_system * (float)(buff.audio_output[3].channel_volume / 100.0);
+		send_volume_esp((float)gain_system*100,0); // Apago la correccion de loudness
 	}
-
-	// Calculo la ganancia de cada canal
-
-
-
+	else{
+		gain_channels[0] = (float)(buff.audio_output[0].channel_volume / 100.0);
+		gain_channels[1] = (float)(buff.audio_output[1].channel_volume / 100.0);
+		gain_channels[2] = (float)(buff.audio_output[2].channel_volume / 100.0);
+		gain_channels[3] = (float)(buff.audio_output[3].channel_volume / 100.0);
+		send_volume_esp((float)gain_system*100,1); // Prendo la correccion de loudness
+	}
 }
 
+void give_sem_save_volume(){
+	xSemaphoreGive(semCalcVolume);
+}

@@ -225,6 +225,7 @@ typedef struct {
 }GeneralConfig;
 
 #define INITIALIZED 3
+#define UNINITIALIZED 0
 typedef struct {
 	uint8_t Isinitailized;
 	uint8_t main_volume;

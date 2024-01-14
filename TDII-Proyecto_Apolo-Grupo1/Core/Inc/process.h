@@ -27,7 +27,7 @@ void SaveData_process(void *arguments);
 void FilterData_process(void *arguments);
 void CalculateCoefs_process(void *arguments);
 void volume_process(void *arguments);
-
+void upd_progressVar_process(void *arguments);
 
 
 

@@ -37,6 +37,7 @@
 
  typedef enum{Q15=0,Q32=1}type_data_filter;
 
+ void give_sem_save_volume();
 
 // Funciones diseño filtros RBJ
 

@@ -67,6 +67,8 @@ osThreadId defaultTaskHandle;
 SemaphoreHandle_t semSaveData;
 SemaphoreHandle_t semProcessData; // semaforo para indicar si se puede tocar o no el buffer de entrada/salida
 SemaphoreHandle_t semCalcCoefs;
+SemaphoreHandle_t semI2CResource;
+SemaphoreHandle_t semCalcVolume;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
