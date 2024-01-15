@@ -166,6 +166,12 @@ void filter_data(QueueHandle_t queue_datos,float32_t* data_out){
     free(buff);
 }
 
+void reset_loudness_alg(){
+    
+     for(uint32_t c=0;c < NUM_CHANNELS;c++){
+        clearQueue(&sub_windows[c]);
+    }
+}
 /**
  * @brief 
  * Esta funcion recibe un buffer de time_gate segundos muestreados a una Fs frecuencia, y un loudness objetivo (loudness target).

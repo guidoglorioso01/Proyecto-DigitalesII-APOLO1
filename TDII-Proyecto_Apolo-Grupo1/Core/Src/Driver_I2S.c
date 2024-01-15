@@ -124,7 +124,7 @@ size_t readData_I2S(uint8_t canal, q15_t *buff, size_t lenToRead) {
 	return i;
 }
 
-/*Modificar*/ // los ifs
+
 void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite,float gain) {
 	//Valido escritura
 	if(lenToWrite>DATOS_P_CANAL)

@@ -64,6 +64,7 @@ void filter_data(QueueHandle_t queue_datos ,float32_t* data_out);
 //void ingresar_datos_medicion(uint8_t *data,size_t size );
 void volume_task_handler(void *arg);
 void volume_task_start_up();
+void reset_loudness_alg();
 
 uint8_t isnumber(const char caracter);
 void terminal_task_start_up();

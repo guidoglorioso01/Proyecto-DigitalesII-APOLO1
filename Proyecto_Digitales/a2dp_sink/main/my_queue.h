@@ -20,4 +20,6 @@ void enqueue(FloatQueue *q, float item);
 
 float dequeue(FloatQueue *q);
 
+void clearQueue(FloatQueue *q);
+
 void copyQueueToVector(FloatQueue *q, float *vector);

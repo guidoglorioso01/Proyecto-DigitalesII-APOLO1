@@ -20,7 +20,11 @@ bool isQueueFull(FloatQueue *q) {
     int nextRear = (q->rear + 1) % MAX_QUEUE_SIZE;
     return (nextRear == q->front);
 }
-
+void clearQueue(FloatQueue *q){
+    if(!isQueueEmpty(q)){
+        dequeue(q);
+    }
+}
 
 void enqueue(FloatQueue *q, float item) {
     if (isQueueFull(q)) {

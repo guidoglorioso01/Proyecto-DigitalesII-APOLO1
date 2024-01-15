@@ -20,7 +20,6 @@ nvs_handle_t app_nvs_handle;
 const char* key = "DatosUser";
 extern uint8_t correccion_loudness;
 extern float loudness_target;
-
 uint32_t tiempo_total=0;
 uint32_t tiempo_actual=0;
 
@@ -198,6 +197,8 @@ uint8_t anlyses_message(uint8_t command){
             else{
                 return ERROR;
             }
+            if(correccion_loudness == 0)
+                reset_loudness_alg();
             #if DEBUG    
             printf("Se seteo el loudness en %f, y se encuentra en un estado %i\n",loudness_target,correccion_loudness);
             #endif
