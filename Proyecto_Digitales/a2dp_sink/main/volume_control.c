@@ -27,6 +27,7 @@ uint8_t *volume_control_changeVolume(const uint8_t *data, uint8_t *outputData, s
     int channel = 0;
     
     memcpy(outputData, data, size);
+
     size_t h = 0;
    
     if(xQueueReceive(queue_correccion,&dato_recibido,0) == pdPASS ){ // Pude retirar un dato de la queue

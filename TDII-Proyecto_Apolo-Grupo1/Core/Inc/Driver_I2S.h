@@ -17,8 +17,9 @@ typedef enum{IZQUIERDO=0,DERECHO=1}canal_t;
 
 #define DATOS_P_CANAL 	BUFFER_SAMPLE_LEN
 #define BUFF_SIZE 		DATOS_P_CANAL*2
-
-
+#define PINPONG_BUFF_SIZE BUFF_SIZE*2
+#define WS_PIN_Pin GPIO_PIN_12
+#define WS_PIN_GPIO_Port GPIOB
 //#############################################################################
 //Init
 //#############################################################################
@@ -32,9 +33,10 @@ void task_I2S_recieve();
 //#############################################################################
 //Callbacks
 //#############################################################################
-void callbackI2SRx();
-void callbackI2STx();
-void callbackSPITx();
+void callbackI2SRx_CMP();
+void callbackI2SRx_HALF();
+void callbackI2STx_CMP();
+void callbackI2STx_HALF();
 
 
 //#############################################################################
