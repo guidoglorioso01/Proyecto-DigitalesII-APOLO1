@@ -62,11 +62,14 @@ void initI2SDriver() {
 
 	HAL_I2S_Transmit_DMA(&hi2s3,(uint16_t *) ptrDmaOutAB, PINPONG_BUFF_SIZE);
 
-	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
+	// Busco un flanco ascendente (si se usa como Master al ST entonces se comentan estas lineas)
+	//while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
+	//while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
 
-	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
 	HAL_I2S_Receive_DMA(&hi2s2,(uint16_t *) ptrDmaIn, PINPONG_BUFF_SIZE);
-}
+	//HAL_I2S_DMAPause(&hi2s2);
+	//HAL_I2S_DMAResume(&hi2s2);
+;}
 
 
 //#############################################################################
@@ -162,20 +165,20 @@ void initI2SDriver() {
 //#############################################################################
 //Recibir Transmitir Datos
 //#############################################################################
-void recibirDatos() {
-	switchBufferIn();
-	//HAL_I2S_Receive_DMA(&hi2s2,(uint16_t *) ptrDmaIn, BUFF_SIZE);
-}
-
-void transmitirDatos() {
-	switchBufferOutAB();
-	switchBufferOutCD();
-
-	HAL_I2S_Transmit_DMA(&hi2s3,(uint16_t *) ptrDmaOutAB, BUFF_SIZE);
-
-	//Esta para datos de 8bits auqnue lo configure como trama de 16
-	//HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)ptrDmaOutCD, 2*BUFF_SIZE);
-}
+//void recibirDatos() {
+//	switchBufferIn();
+//	//HAL_I2S_Receive_DMA(&hi2s2,(uint16_t *) ptrDmaIn, BUFF_SIZE);
+//}
+//
+//void transmitirDatos() {
+//	switchBufferOutAB();
+//	switchBufferOutCD();
+//
+//	HAL_I2S_Transmit_DMA(&hi2s3,(uint16_t *) ptrDmaOutAB, BUFF_SIZE);
+//
+//	//Esta para datos de 8bits auqnue lo configure como trama de 16
+//	//HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)ptrDmaOutCD, 2*BUFF_SIZE);
+//}
 
 //#############################################################################
 //CALLBACKS DMA
@@ -183,9 +186,21 @@ void transmitirDatos() {
 
 //I2S 2
 void callbackI2SRx_CMP() {
+	static int i=0;
 	ptrDmaIn = &bufferIn[PINPONG_BUFF_SIZE / 2];
 	ptrProcessIn = &bufferIn[0];
-
+	i++;
+//	if(i > 20){
+//		i = 0;
+//		HAL_I2S_DMAPause(&hi2s2);
+//		HAL_I2S_DMAPause(&hi2s3);
+//		while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
+//		while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
+//		//HAL_I2S_Receive_DMA(&hi2s2,(uint16_t *) ptrDmaIn, PINPONG_BUFF_SIZE);
+//		HAL_I2S_DMAResume(&hi2s2);
+//		HAL_I2S_DMAResume(&hi2s3);
+//
+//	}
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	xSemaphoreGiveFromISR( semRx_I2S, &xHigherPriorityTaskWoken );
 	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
@@ -268,9 +283,6 @@ q15_t dataDer[DATOS_P_CANAL];
 void pruebaLoopback() {
 	//Leo
 	for(int i =0;i<BUFF_SIZE;i++){
-		if(ptrProcessIn[i] == 0 && i!=0)
-			ptrProcessOutAB[i] =ptrProcessOutAB[i-1];
-		else
 		ptrProcessOutAB[i] = ptrProcessIn[i];
 	}
 
