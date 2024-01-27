@@ -60,7 +60,7 @@ typedef float         float32_t;
 uint8_t * volume_control_changeVolume(const uint8_t *data, uint8_t *outputData, size_t size, uint8_t volume);
 float32_t abs_float(float32_t num);
 uint8_t loudness_algoritmo(float32_t target_loundness,float32_t *correction);
-void filter_data(QueueHandle_t queue_datos ,float32_t* data_out);
+uint8_t filter_data(QueueHandle_t queue_datos ,float32_t* data_out);
 //void ingresar_datos_medicion(uint8_t *data,size_t size );
 void volume_task_handler(void *arg);
 void volume_task_start_up();
