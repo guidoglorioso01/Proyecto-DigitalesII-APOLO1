@@ -55,13 +55,13 @@ void initI2SDriver() {
 
 	//HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 
-	HAL_I2S_Transmit_DMA(&hi2s3,(uint16_t *) ptrDmaOutAB, PINPONG_BUFF_SIZE);
 
 	// Busco un flanco ascendente (si se usa como Master al ST entonces se comentan estas lineas)
-	//while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
-	//while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
+	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
+	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
 
 	HAL_I2S_Receive_DMA(&hi2s2,(uint16_t *) ptrDmaIn, PINPONG_BUFF_SIZE);
+
 }
 
 
@@ -72,46 +72,58 @@ void initI2SDriver() {
 
 //I2S 2
 void callbackI2SRx_CMP() {
-	if(data_ready_r){
-		ptrDmaIn = &bufferIn[(PINPONG_BUFF_SIZE / 2)-1];
-		ptrProcessIn = &bufferIn[0];
-		data_ready_r = 0;
-	}
+//	if(data_ready_r){
+//		//ptrDmaIn = &bufferIn[(PINPONG_BUFF_SIZE / 2)-1];
+//		ptrProcessIn = &bufferIn[0];
+//		data_ready_r = 0;
+//		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+//			xSemaphoreGiveFromISR( semRx_I2S, &xHigherPriorityTaskWoken );
+//			portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+//	}
 
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	xSemaphoreGiveFromISR( semRx_I2S, &xHigherPriorityTaskWoken );
-	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+
 }
 void callbackI2SRx_HALF() {
-	if(data_ready_r){
-		ptrDmaIn = &bufferIn[0];
-		ptrProcessIn = &bufferIn[(PINPONG_BUFF_SIZE / 2)-1];
-		data_ready_r = 0;
+	static uint8_t i=1;
+	if(i){
+		HAL_I2S_Transmit_DMA(&hi2s3,(uint16_t *) ptrDmaIn, PINPONG_BUFF_SIZE);
+		i=0;
 	}
+//	if(data_ready_r){
+//		//ptrDmaIn = &bufferIn[0];
+//		ptrProcessIn = &bufferIn[(PINPONG_BUFF_SIZE / 2)-1];
+//		data_ready_r = 0;
+//		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+//			xSemaphoreGiveFromISR( semRx_I2S, &xHigherPriorityTaskWoken );
+//			portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+//	}
 
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	xSemaphoreGiveFromISR( semRx_I2S, &xHigherPriorityTaskWoken );
-	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+
 }
 
 //I2S 3
 void callbackI2STx_CMP() {
-	ptrDmaOutAB = &bufferOut_AB[(PINPONG_BUFF_SIZE / 2)-1];
-	ptrProcessOutAB = &bufferOut_AB[0];
+	//ptrDmaOutAB = &bufferOut_AB[(PINPONG_BUFF_SIZE / 2)-1];
+//	if(data_ready_t){
+//	ptrProcessOutAB = &bufferOut_AB[0];
+//	data_ready_t = 0;
+//	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+//	xSemaphoreGiveFromISR( semTxAB_I2S, &xHigherPriorityTaskWoken );
+//	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+//	}
 
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	xSemaphoreGiveFromISR( semTxAB_I2S, &xHigherPriorityTaskWoken );
-	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 
 }
 void callbackI2STx_HALF() {
-
-	ptrDmaOutAB = &bufferOut_AB[0];
-	ptrProcessOutAB = &bufferOut_AB[(PINPONG_BUFF_SIZE / 2)-1];
-
-	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-	xSemaphoreGiveFromISR( semTxAB_I2S, &xHigherPriorityTaskWoken );
-	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+//	if(data_ready_t){
+//	//ptrDmaOutAB = &bufferOut_AB[0];
+//	ptrProcessOutAB = &bufferOut_AB[(PINPONG_BUFF_SIZE / 2)-1];
+//	data_ready_t = 0;
+//	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+//		xSemaphoreGiveFromISR( semTxAB_I2S, &xHigherPriorityTaskWoken );
+//		portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
+//
+//	}
 
 }
 
@@ -130,7 +142,7 @@ void task_I2S_recieve() {
 
 		xSemaphoreTake(semRx_I2S,portMAX_DELAY);
 
-	pruebaLoopback();
+	//pruebaLoopback();
 	}
 }
 

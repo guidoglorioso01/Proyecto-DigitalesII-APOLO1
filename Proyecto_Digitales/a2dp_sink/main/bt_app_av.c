@@ -201,7 +201,7 @@ void bt_i2s_driver_install(void)
     /* Enable the continuous channels */
     ESP_ERROR_CHECK(dac_continuous_enable(tx_chan));
 #else
-    i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_0, I2S_ROLE_SLAVE); // Cambie de master a esclavo
+    i2s_chan_config_t chan_cfg = I2S_CHANNEL_DEFAULT_CONFIG(I2S_NUM_0, I2S_ROLE_MASTER); // Cambie de master a esclavo
     chan_cfg.auto_clear = true;
     i2s_std_config_t std_cfg = {
         .clk_cfg = I2S_STD_CLK_DEFAULT_CONFIG(44100),
