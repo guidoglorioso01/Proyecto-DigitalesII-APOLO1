@@ -291,7 +291,7 @@ void process_filter(){
 
 	//2 Realizo el filtrado de cada canal que necesite datos del canal derecho.
 
-	for(int i=0;i < 4;i++){
+	for(int i=0;i < 2;i++){
 		// Chequeo si el canal esta encendido
 		if(buff.audio_output[i].state == ON){
 
@@ -318,7 +318,7 @@ void process_filter(){
 
 	//4 Realizo el filtrado de cada canal que necesite datos del canal Izquierdo.
 
-	for(int i=0;i < 4;i++){
+	for(int i=0;i < 2;i++){
 		// Chequeo si el canal esta encendido
 		if(buff.audio_output[i].state == ON){
 
@@ -334,7 +334,7 @@ void process_filter(){
 		}
 	}
 	// pongo los canales que no se usan en cero
-	for(int i=0;i < 4;i++){
+	for(int i=0;i < 2;i++){
 		// Chequeo si el canal esta encendido
 		if(buff.audio_output[i].state == OFF){
 			uint8_t channel = buff.audio_output[i].channel;
@@ -342,7 +342,7 @@ void process_filter(){
 		}
 	}
 	//tim1_cuenta = __HAL_TIM_GET_COUNTER(&htim2);
-	lberarSemaforoProc();
+	//lberarSemaforoProc();
 //	pruebaLoopback();
 }
 

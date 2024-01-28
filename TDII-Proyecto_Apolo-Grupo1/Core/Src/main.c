@@ -66,6 +66,7 @@ SemaphoreHandle_t semProcessData; // semaforo para indicar si se puede tocar o n
 SemaphoreHandle_t semCalcCoefs;
 SemaphoreHandle_t semI2CResource;
 SemaphoreHandle_t semCalcVolume;
+SemaphoreHandle_t semDataReady;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
