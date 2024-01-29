@@ -13,21 +13,21 @@
 //#############################################################################
 extern SemaphoreHandle_t semCalcVolume;
 
-q15_t Coef_IIR_EQ[IIR_TAP_NUM_EQ];
-q15_t iir_taps_CO0	[IIR_TAP_NUM_CROSS] ;
-q15_t iir_taps_CO1	[IIR_TAP_NUM_CROSS] ;
-q15_t iir_taps_CO2	[IIR_TAP_NUM_CROSS] ;
-q15_t iir_taps_CO3	[IIR_TAP_NUM_CROSS] ;
+float32_t Coef_IIR_EQ[IIR_TAP_NUM_EQ];
+float32_t iir_taps_CO0	[IIR_TAP_NUM_CROSS] ;
+float32_t iir_taps_CO1	[IIR_TAP_NUM_CROSS] ;
+float32_t iir_taps_CO2	[IIR_TAP_NUM_CROSS] ;
+float32_t iir_taps_CO3	[IIR_TAP_NUM_CROSS] ;
 float32_t gain_channels[4];
 
-q15_t iir_eq_state[4*NUMBER_SOS_EQ];
-q15_t iir_ch1_state[4],  iir_ch2_state[4], iir_ch3_state[4],  iir_ch4_state[4];
+float32_t  iir_eq_state[4*NUMBER_SOS_EQ];
+float32_t  iir_ch1_state[4],  iir_ch2_state[4], iir_ch3_state[4],  iir_ch4_state[4];
 
-arm_biquad_casd_df1_inst_q15 iir_eq_settings;
-arm_biquad_casd_df1_inst_q15 iir_ch1_settings,  iir_ch2_settings, iir_ch3_settings,  iir_ch0_settings;
+arm_biquad_casd_df1_inst_f32 iir_eq_settings;
+arm_biquad_casd_df1_inst_f32 iir_ch1_settings,  iir_ch2_settings, iir_ch3_settings,  iir_ch0_settings;
 
-q15_t buff_filtrado1[BUFFER_SAMPLE_LEN];
-q15_t buff_filtrado2[BUFFER_SAMPLE_LEN];
+float32_t buff_filtrado1[BUFFER_SAMPLE_LEN];
+float32_t buff_filtrado2[BUFFER_SAMPLE_LEN];
 
 //#############################################################################
 // Funciones de filtrado
@@ -41,7 +41,7 @@ q15_t buff_filtrado2[BUFFER_SAMPLE_LEN];
  * buff_out-> datos de salida, por defecto debe ser de tamaño BLOCK_SIZE_FLOAT
  * */
 
-void filter_function_eq(q15_t *buff_in,q15_t *buff_out){
+void filter_function_eq(float32_t *buff_in,float32_t *buff_out){
 
 	/*
 	 * NOTAS para ver:
@@ -67,7 +67,7 @@ void filter_function_eq(q15_t *buff_in,q15_t *buff_out){
 		}
 	}
 	if(flag == 1)
-		arm_biquad_cascade_df1_q15(&iir_eq_settings, buff_in, buff_out, BUFFER_SAMPLE_LEN);
+		arm_biquad_cascade_df1_f32(&iir_eq_settings, buff_in, buff_out, BUFFER_SAMPLE_LEN);
 	else
 		for(int i=0;i<BUFFER_SAMPLE_LEN;i++)
 			buff_out[i] = 0;
@@ -84,7 +84,7 @@ void filter_function_eq(q15_t *buff_in,q15_t *buff_out){
  * buff_out-> datos de salida, por defecto debe ser de tamaño BLOCK_SIZE_FLOAT
  * */
 
-void filter_function_co(uint8_t channel, q15_t *buff_in,q15_t *buff_out){
+void filter_function_co(uint8_t channel, float32_t *buff_in,float32_t *buff_out){
 
 	/*
 	 * Tengo que convertir un dato uint16 a q15?
@@ -101,16 +101,16 @@ void filter_function_co(uint8_t channel, q15_t *buff_in,q15_t *buff_out){
 
 	switch(channel){
 	case CHANNEL_0:
-		arm_biquad_cascade_df1_q15(&iir_ch0_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
+		arm_biquad_cascade_df1_f32(&iir_ch0_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
 		break;
 	case CHANNEL_1:
-		arm_biquad_cascade_df1_q15(&iir_ch1_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
+		arm_biquad_cascade_df1_f32(&iir_ch1_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
 		break;
 	case CHANNEL_2:
-		arm_biquad_cascade_df1_q15(&iir_ch2_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
+		arm_biquad_cascade_df1_f32(&iir_ch2_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
 		break;
 	case CHANNEL_3:
-		arm_biquad_cascade_df1_q15(&iir_ch3_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
+		arm_biquad_cascade_df1_f32(&iir_ch3_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
 		break;
 	}
 }
@@ -127,8 +127,7 @@ void filter_initialization_eq(uint8_t Type){
 
 	UserData buff;
 	get_user_data(&buff);
-	float32_t sos_float[IIR_TAP_NUM_EQ]; // buffer para los coeficientes calculados
-	float32_t sos_float_check_max[IIR_TAP_NUM_EQ];
+
 	float32_t q_bw[7] = {0.7,1.5,1.5,1.5,0.8,1.3,0.6};
 	Equalizer atenuaciones;
 
@@ -152,24 +151,9 @@ void filter_initialization_eq(uint8_t Type){
 					atenuaciones._8000hz,
 					atenuaciones._16000hz};
 
-	designFilter(gain,q_bw,sos_float,Q15);
+	designFilter(gain,q_bw,Coef_IIR_EQ,F32);
 
-	float32_t max;
-	uint32_t index;
-	arm_abs_f32(sos_float,sos_float_check_max,IIR_TAP_NUM_EQ); // pongo todos los coef en modulo
-	arm_max_f32(sos_float_check_max,IIR_TAP_NUM_EQ,&max,&index); 		// verifico que ningun sea mayor a 1
-
-	if(max > 1){
-		// Si algun coef es mayor a 1 divido el vector para que todos sean menores a 1
-		// si max > 1 y max < 2 se divide por 2
-		// si max > 2 y max < 3 se divide por 4. Ningun coeficiente es mayor a 3.
-		arm_scale_f32(sos_float,(float32_t)1/(1 << (uint32_t)max ) ,sos_float,IIR_TAP_NUM_EQ );
-	}
-
-	arm_float_to_q15(sos_float, Coef_IIR_EQ ,IIR_TAP_NUM_EQ);
-
-	arm_biquad_cascade_df1_init_q15(&iir_eq_settings,(uint32_t)(IIR_TAP_NUM_EQ / IIR_CANT_COEF),(q15_t *)Coef_IIR_EQ , iir_eq_state, (int8_t)max);
-
+	arm_biquad_cascade_df1_init_f32(&iir_eq_settings,(uint32_t)(IIR_TAP_NUM_EQ / IIR_CANT_COEF),(float32_t *)Coef_IIR_EQ , iir_eq_state);
 
 }
 
@@ -182,44 +166,25 @@ void filter_initialization_eq(uint8_t Type){
  * */
 void filter_initialization_co(uint8_t channel,uint8_t Type){
 
-	float32_t buff[IIR_TAP_NUM_CROSS];
-	float32_t buff_max[IIR_TAP_NUM_CROSS];
-
 	if(Type == TYPE_FLAT)
 		return;
 
-	designCrossover(buff, Type);
-
-	float32_t max;
-
-	arm_abs_f32(buff,buff_max,IIR_TAP_NUM_CROSS); // pongo todos los coef en modulo
-
-	uint32_t index;
-	arm_max_f32(buff_max,IIR_TAP_NUM_CROSS,&max,&index); 		// verifico que ningun sea mayor a 1
-
-	if(max > 1){
-		// Si algun coef es mayor a 1 divido el vector para que todos sean menores a 1
-		// si max > 1 y max < 2 se divide por 2
-		// si max > 2 y max < 3 se divide por 4. Ningun coeficiente es mayor a 3.
-		arm_scale_f32(buff,(float32_t)1/(1 << (uint32_t)max ) ,buff,IIR_TAP_NUM_CROSS );
-	}
-
 	switch(channel){
 	case CHANNEL_0:
-		arm_float_to_q15(buff, iir_taps_CO0 ,IIR_TAP_NUM_CROSS);
-		arm_biquad_cascade_df1_init_q15(&iir_ch0_settings,(uint32_t)(IIR_TAP_NUM_CROSS / IIR_CANT_COEF),(q15_t *) iir_taps_CO0, &iir_ch1_state[0],(int8_t)max);
+		designCrossover(iir_taps_CO0, Type);
+		arm_biquad_cascade_df1_init_f32(&iir_ch0_settings,(uint32_t)(IIR_TAP_NUM_CROSS / IIR_CANT_COEF),(float32_t *) iir_taps_CO0, &iir_ch1_state[0]);
 	break;
 	case CHANNEL_1:
-		arm_float_to_q15(buff, iir_taps_CO1 ,IIR_TAP_NUM_CROSS);
-		arm_biquad_cascade_df1_init_q15(&iir_ch1_settings,(uint32_t)(IIR_TAP_NUM_CROSS / IIR_CANT_COEF),(q15_t *) iir_taps_CO1 , &iir_ch2_state[0],(int8_t)max);
+		designCrossover(iir_taps_CO1, Type);
+		arm_biquad_cascade_df1_init_f32(&iir_ch1_settings,(uint32_t)(IIR_TAP_NUM_CROSS / IIR_CANT_COEF),(float32_t *) iir_taps_CO1 , &iir_ch2_state[0]);
 	break;
 	case CHANNEL_2:
-		arm_float_to_q15(buff, iir_taps_CO2 ,IIR_TAP_NUM_CROSS);
-		arm_biquad_cascade_df1_init_q15(&iir_ch2_settings,(uint32_t)(IIR_TAP_NUM_CROSS / IIR_CANT_COEF),(q15_t *) iir_taps_CO2 , &iir_ch3_state[0],(int8_t)max);
+		designCrossover(iir_taps_CO2, Type);
+		arm_biquad_cascade_df1_init_f32(&iir_ch2_settings,(uint32_t)(IIR_TAP_NUM_CROSS / IIR_CANT_COEF),(float32_t *) iir_taps_CO2 , &iir_ch3_state[0]);
 	break;
 	case CHANNEL_3:
-		arm_float_to_q15(buff, iir_taps_CO3 ,IIR_TAP_NUM_CROSS);
-		arm_biquad_cascade_df1_init_q15(&iir_ch3_settings,(uint32_t)(IIR_TAP_NUM_CROSS / IIR_CANT_COEF),(q15_t *) iir_taps_CO3 , &iir_ch4_state[0],(int8_t)max);
+		designCrossover(iir_taps_CO3, Type);
+		arm_biquad_cascade_df1_init_f32(&iir_ch3_settings,(uint32_t)(IIR_TAP_NUM_CROSS / IIR_CANT_COEF),(float32_t *) iir_taps_CO3 , &iir_ch4_state[0]);
 	break;
 
 	}

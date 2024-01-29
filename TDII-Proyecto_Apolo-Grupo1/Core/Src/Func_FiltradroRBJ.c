@@ -161,16 +161,17 @@ void band_pass(float32_t f0, float32_t dbGain, float32_t BW, float32_t* b, float
 //#############################################################################
 
 void designFilter(float32_t gainsdB[7], float32_t Q_BW[7], float32_t *sos,type_data_filter type) {
-//Para q32:
+//Para F32:
 //	The coefficients are stored in the array pCoeffs in the following order:
 //	    {b10, b11, b12, a11, a12, b20, b21, b22, a21, a22, ...}
+
 //Para q15
 //	The coefficients are stored in the array pCoeffs in the following order:
 //	    {b10, 0, b11, b12, a11, a12, b20, 0, b21, b22, a21, a22, ...}
 
 	float32_t b[3], a[2];
     int i=0;
-    if(type == Q32){
+    if(type == F32){
 		low_shelf_pass(100, gainsdB[0], Q_BW[0], b, a);
 		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
 		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
@@ -276,10 +277,9 @@ void designCrossover(float32_t *buff,uint8_t Type){
 		}
 
 	buff[0]= b[0];
-	buff[1]= 0 ;
-	buff[2]= b[1];
-	buff[3]= b[2];
-	buff[4]= a[0];
-	buff[5]= a[1];
+	buff[1]= b[1];
+	buff[2]= b[2];
+	buff[3]= a[0];
+	buff[4]= a[1];
 
 }
