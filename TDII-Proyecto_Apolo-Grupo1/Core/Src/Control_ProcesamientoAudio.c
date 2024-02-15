@@ -274,7 +274,7 @@ void filter_init_system(){
  * */
 
 void process_filter(){
-
+//
 //	tim1_cuenta = 0 ;
 //	__HAL_TIM_SET_COUNTER(&htim2,0);
 

@@ -234,7 +234,11 @@ void tft_init()
     }
     //setRotation(0);             //PORTRAIT
     invertDisplay(false);
+
     setRotation(1);
+
+//    setRotation(3); // descomentar para invertir pantalla
+
 }
 
 void invertDisplay(uint8_t i)

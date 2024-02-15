@@ -22,12 +22,12 @@ extern I2S_HandleTypeDef hi2s3;
 //Puntero de datos a procesar IN
 int16_t bufferIn[PINPONG_BUFF_SIZE];
 //Buffer de entrada
-static volatile int16_t *ptrProcessIn = &bufferIn[(PINPONG_BUFF_SIZE/2)-1];
+static volatile int16_t *ptrProcessIn = &bufferIn[(PINPONG_BUFF_SIZE/2)];
 
 //Puntero de datos a procesar OUT
 int16_t bufferOut_AB[PINPONG_BUFF_SIZE];
 //Buffers de Salida AB
-static volatile int16_t *ptrProcessOutAB = &bufferOut_AB[(PINPONG_BUFF_SIZE/2)-1];
+static volatile int16_t *ptrProcessOutAB = &bufferOut_AB[(PINPONG_BUFF_SIZE/2)];
 
 
 
@@ -65,18 +65,25 @@ void initI2SDriver() {
 //CALLBACKS DMA
 //#############################################################################
 
+
+//uint32_t tim1_cuenta=0;
+//extern TIM_HandleTypeDef htim2;
+
 //I2S 2
 void callbackI2SRx_CMP() {
 
-	ptrProcessIn = &bufferIn[(PINPONG_BUFF_SIZE / 2)-1];
+	ptrProcessIn = &bufferIn[(PINPONG_BUFF_SIZE / 2)];
 
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	xSemaphoreGiveFromISR( semRx_I2S, &xHigherPriorityTaskWoken );
 	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
-
+//	tim1_cuenta = __HAL_TIM_GET_COUNTER(&htim2);
 }
 void callbackI2SRx_HALF() {
 	static uint8_t i=1;
+//	tim1_cuenta = 0 ;
+//	__HAL_TIM_SET_COUNTER(&htim2,0);
+
 	if(i){
 		HAL_I2S_Transmit_DMA(&hi2s3,(uint16_t *) bufferOut_AB, PINPONG_BUFF_SIZE);
 		i=0;
@@ -93,7 +100,7 @@ void callbackI2SRx_HALF() {
 //I2S 3
 void callbackI2STx_CMP() {
 
-	ptrProcessOutAB = &bufferOut_AB[(PINPONG_BUFF_SIZE / 2)-1];
+	ptrProcessOutAB = &bufferOut_AB[(PINPONG_BUFF_SIZE / 2)];
 
 	BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 	xSemaphoreGiveFromISR( semTxAB_I2S, &xHigherPriorityTaskWoken );

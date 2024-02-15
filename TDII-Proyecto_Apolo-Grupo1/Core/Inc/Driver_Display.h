@@ -48,7 +48,9 @@
 #include "stdint.h"
 #include "stm32f4xx_hal.h"
 #include "stdlib.h"
-// Pins definitions
+
+
+ // Pins definitions
 
 #define RD_PORT GPIOA
 #define RD_PIN  0//GPIO_PIN_0
