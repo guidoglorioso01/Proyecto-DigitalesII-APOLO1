@@ -142,21 +142,21 @@ void task_I2S_recieve() {
 //#############################################################################
 //Get and push data
 //#############################################################################
-size_t readData_I2S(uint8_t canal, q15_t *buff, size_t lenToRead) {
+size_t readData_I2S(uint8_t canal, float32_t *buff, size_t lenToRead) {
 
 	if(lenToRead > DATOS_P_CANAL)
 		return 0;
 
 	size_t i=0;
 	for(i=0; i<lenToRead;i++) {
-		buff[i] = (q15_t) ptrProcessIn[(2*i)+canal];
+		buff[i] = (float32_t) ptrProcessIn[(2*i)+canal]  / 32768.0;
 	}
 
 	return i;
 }
 
 
-void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite,float gain) {
+void writeData_I2S(uint8_t ampli, float32_t *datos, uint32_t lenToWrite,float gain) {
 	//Valido escritura
 	if(lenToWrite>DATOS_P_CANAL)
 		return;
@@ -166,11 +166,11 @@ void writeData_I2S(uint8_t ampli, int16_t *datos, uint32_t lenToWrite,float gain
 
 	if(ampli==CHANNEL_0){
 		for(uint32_t i=0; i<lenToWrite; i++)
-			ptrProcessOutAB[i*2+IZQUIERDO] = (int16_t)datos[i]*gain;
+			ptrProcessOutAB[i*2+IZQUIERDO] = (int16_t)(datos[i]*gain * 32768.0);
 	}
 	if(ampli==CHANNEL_1){
 		for(uint32_t i=0; i<lenToWrite; i++)
-			ptrProcessOutAB[i*2+DERECHO] = (int16_t)datos[i]*gain;
+			ptrProcessOutAB[i*2+DERECHO] = (int16_t)(datos[i]* gain * 32768.0);
 	}
 
 // Por el momento solo hay dos canales funcionando

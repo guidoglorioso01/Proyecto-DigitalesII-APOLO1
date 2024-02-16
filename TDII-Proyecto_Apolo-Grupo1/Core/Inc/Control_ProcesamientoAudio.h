@@ -21,12 +21,11 @@
  extern "C" {
 #endif
 
- // Si trabajo con Q15
- #define IIR_CANT_COEF 			6
- // Si trabajo con Q31
- //#define IIR_CANT_COEF 		5
 
- #define NUMBER_SOS_EQ 		4
+ #define IIR_CANT_COEF 			5
+
+
+ #define NUMBER_SOS_EQ 		5
  #define IIR_TAP_NUM_EQ 		IIR_CANT_COEF*NUMBER_SOS_EQ	// -> IIR_CANT_COEF coef por SOS , 7 SOS por IIR
  #define IIR_TAP_NUM_CROSS 	IIR_CANT_COEF 	// -> IIR_CANT_COEF coef por SOS , 1 SOS por IIR
 
@@ -35,7 +34,7 @@
  #define BLOCK_SIZE_FLOAT BUFFER_SAMPLE_LEN
 
 
- typedef enum{Q15=0,Q32=1}type_data_filter;
+ typedef enum{Q15=0,Q32=1,FLOAT = 2}type_data_filter;
 
  void give_sem_save_volume();
 
@@ -58,8 +57,8 @@ void designCrossover(float32_t *buff,uint8_t Type);
 
 //Funciones de drivers de filtrado
 
-void filter_function_eq(q15_t *buff_in,q15_t *buff_out);
-void filter_function_co(uint8_t channel, q15_t *buff_in,q15_t *buff_out);
+void filter_function_eq(float32_t *buff_in,float32_t *buff_out);
+void filter_function_co(uint8_t channel, float32_t *buff_in,float32_t *buff_out);
 void filter_initialization_eq(uint8_t Type);
 void filter_initialization_co(uint8_t channel,uint8_t Type);
 void filter_init_system();

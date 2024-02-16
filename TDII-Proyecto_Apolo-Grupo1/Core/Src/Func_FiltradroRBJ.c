@@ -170,77 +170,34 @@ void designFilter(float32_t gainsdB[7], float32_t Q_BW[7], float32_t *sos,type_d
 
 	float32_t b[3], a[2];
     int i=0;
-    if(type == Q32){
-		low_shelf_pass(100, gainsdB[0], Q_BW[0], b, a);
-		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
-		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
-
-		peaking_filter(200, gainsdB[1], Q_BW[1], b, a);
-		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
-		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
-
-		peaking_filter(500, gainsdB[2], Q_BW[2], b, a);
-		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
-		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
-
-		peaking_filter(1200, gainsdB[3], Q_BW[3], b, a);
-		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
-		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
-
-		peaking_filter(4000, gainsdB[4], Q_BW[4], b, a);
-		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
-		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
-
-		peaking_filter(8000, gainsdB[5], Q_BW[5], b, a);
-		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
-		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
-
-		high_shelf_pass(13000, gainsdB[6], Q_BW[6], b, a);
-		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
-		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
-    }
-    if(type == Q15){
+    if(type == FLOAT){
 
     	low_shelf_pass(100, gainsdB[0], Q_BW[0], b, a);
- 		sos[i++] = b[0];
- 		sos[i++] = 0;
- 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
+ 		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
  		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
 
-// 		peaking_filter(200, gainsdB[1], Q_BW[1], b, a);
-// 		sos[i++] = b[0];
-// 		sos[i++] = 0;
-// 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
-// 		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
+ 		peaking_filter(200, gainsdB[1], Q_BW[1], b, a);
+ 		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
+ 		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
 
 // 		peaking_filter(500, gainsdB[2], Q_BW[2], b, a);
-// 		sos[i++] = b[0];
-// 		sos[i++] = 0;
-// 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
+// 		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
 // 		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
 
  		peaking_filter(1200, gainsdB[3], Q_BW[3], b, a);
- 		sos[i++] = b[0];
- 		sos[i++] = 0;
- 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
+ 		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
  		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
-
+//
 // 		peaking_filter(4000, gainsdB[4], Q_BW[4], b, a);
-// 		sos[i++] = b[0];
-// 		sos[i++] = 0;
-// 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
+// 		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
 // 		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
 
  		peaking_filter(8000, gainsdB[5], Q_BW[5], b, a);
- 		sos[i++] = b[0];
- 		sos[i++] = 0;
- 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
+ 		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
  		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
 
  		high_shelf_pass(13000, gainsdB[6], Q_BW[6], b, a);
- 		sos[i++] = b[0];
- 		sos[i++] = 0;
- 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
+ 		for(int i2=0;i2<3;i2++,i++) sos[i] = b[i2];
  		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
      }
 
@@ -276,10 +233,9 @@ void designCrossover(float32_t *buff,uint8_t Type){
 		}
 
 	buff[0]= b[0];
-	buff[1]= 0 ;
-	buff[2]= b[1];
-	buff[3]= b[2];
-	buff[4]= a[0];
-	buff[5]= a[1];
+	buff[1]= b[1];
+	buff[2]= b[2];
+	buff[3]= a[0];
+	buff[4]= a[1];
 
 }
