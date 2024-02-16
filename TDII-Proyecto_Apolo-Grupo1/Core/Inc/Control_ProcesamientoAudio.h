@@ -26,12 +26,12 @@
  // Si trabajo con Q31
  //#define IIR_CANT_COEF 		5
 
- #define NUMBER_SOS_EQ 		7
+ #define NUMBER_SOS_EQ 		5
  #define IIR_TAP_NUM_EQ 		IIR_CANT_COEF*NUMBER_SOS_EQ	// -> IIR_CANT_COEF coef por SOS , 7 SOS por IIR
  #define IIR_TAP_NUM_CROSS 	IIR_CANT_COEF 	// -> IIR_CANT_COEF coef por SOS , 1 SOS por IIR
 
 
- #define BUFFER_SAMPLE_LEN  512// 11.6ms de llenado //896*2// 1000
+ #define BUFFER_SAMPLE_LEN  2048//512// 11.6ms de llenado //896*2// 1000
  #define BLOCK_SIZE_FLOAT BUFFER_SAMPLE_LEN
 
 

@@ -207,11 +207,11 @@ void designFilter(float32_t gainsdB[7], float32_t Q_BW[7], float32_t *sos,type_d
  		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
  		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
 
- 		peaking_filter(200, gainsdB[1], Q_BW[1], b, a);
- 		sos[i++] = b[0];
- 		sos[i++] = 0;
- 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
- 		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
+// 		peaking_filter(200, gainsdB[1], Q_BW[1], b, a);
+// 		sos[i++] = b[0];
+// 		sos[i++] = 0;
+// 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
+// 		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
 
  		peaking_filter(500, gainsdB[2], Q_BW[2], b, a);
  		sos[i++] = b[0];
@@ -225,11 +225,11 @@ void designFilter(float32_t gainsdB[7], float32_t Q_BW[7], float32_t *sos,type_d
  		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
  		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
 
- 		peaking_filter(4000, gainsdB[4], Q_BW[4], b, a);
- 		sos[i++] = b[0];
- 		sos[i++] = 0;
- 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
- 		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
+// 		peaking_filter(4000, gainsdB[4], Q_BW[4], b, a);
+// 		sos[i++] = b[0];
+// 		sos[i++] = 0;
+// 		for(int i2=1;i2<3;i2++,i++) sos[i] = b[i2];
+// 		for(int i2=0;i2<2;i2++,i++) sos[i] = a[i2];
 
  		peaking_filter(8000, gainsdB[5], Q_BW[5], b, a);
  		sos[i++] = b[0];

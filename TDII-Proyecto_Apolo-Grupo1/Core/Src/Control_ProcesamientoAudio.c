@@ -67,7 +67,7 @@ void filter_function_eq(q15_t *buff_in,q15_t *buff_out){
 		}
 	}
 	if(flag == 1)
-		arm_biquad_cascade_df1_q15(&iir_eq_settings, buff_in, buff_out, BUFFER_SAMPLE_LEN);
+		arm_biquad_cascade_df1_fast_q15(&iir_eq_settings, buff_in, buff_out, BUFFER_SAMPLE_LEN);
 	else
 		for(int i=0;i<BUFFER_SAMPLE_LEN;i++)
 			buff_out[i] = 0;
@@ -94,23 +94,25 @@ void filter_function_co(uint8_t channel, q15_t *buff_in,q15_t *buff_out){
 	// En caso de el filtro configurado se Respuesta plana, copio entrada en salida
 	uint8_t filter_type = buff.audio_output[channel].type_equalizer;
 	if(filter_type == TYPE_FLAT){
-		memcpy(buff_out,buff_in,BLOCK_SIZE_FLOAT);
+		//memcpy(buff_out,buff_in,BLOCK_SIZE_FLOAT);
+	for(int i=0;i<BUFFER_SAMPLE_LEN;i++)
+				buff_out[i] = buff_in[i];
 		return;
 	}
 
 
 	switch(channel){
 	case CHANNEL_0:
-		arm_biquad_cascade_df1_q15(&iir_ch0_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
+		arm_biquad_cascade_df1_fast_q15(&iir_ch0_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
 		break;
 	case CHANNEL_1:
-		arm_biquad_cascade_df1_q15(&iir_ch1_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
+		arm_biquad_cascade_df1_fast_q15(&iir_ch1_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
 		break;
 	case CHANNEL_2:
-		arm_biquad_cascade_df1_q15(&iir_ch2_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
+		arm_biquad_cascade_df1_fast_q15(&iir_ch2_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
 		break;
 	case CHANNEL_3:
-		arm_biquad_cascade_df1_q15(&iir_ch3_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
+		arm_biquad_cascade_df1_fast_q15(&iir_ch3_settings, buff_in, buff_out, BLOCK_SIZE_FLOAT);
 		break;
 	}
 }
@@ -284,11 +286,11 @@ void process_filter(){
 	//1 Realizo el filtrado de ecualizacion (canal derecho)
 
 	// Pido datos si los hay
-	readData_I2S(DERECHO, buff_filtrado1, BUFFER_SAMPLE_LEN);
+	readData_I2S(DERECHO, buff_filtrado2, BUFFER_SAMPLE_LEN);
 
 	// Realizo el primer filtrado
-	filter_function_eq(buff_filtrado1,buff_filtrado2);
-
+	//
+	filter_function_eq(buff_filtrado2,buff_filtrado1);
 	//2 Realizo el filtrado de cada canal que necesite datos del canal derecho.
 
 	for(int i=0;i < 2;i++){
@@ -302,9 +304,9 @@ void process_filter(){
 
 			if(left_right == RIGHT_CHANNEL_OUTPUT){
 
-				filter_function_co(channel,buff_filtrado2,buff_filtrado1);
 
-				writeData_I2S(channel,(int16_t *) buff_filtrado1, BUFFER_SAMPLE_LEN,gain_channels[channel]); // tegno que poner el buff1
+				filter_function_co(channel,buff_filtrado1,buff_filtrado2);
+				writeData_I2S(channel,(int16_t *) buff_filtrado2, BUFFER_SAMPLE_LEN,gain_channels[channel]); // tegno que poner el buff1
 
 			}
 		}
@@ -312,9 +314,10 @@ void process_filter(){
 
 //	//3 Realizo el filtrado de ecualizacion (canal Izquierdo)
 //
-	readData_I2S(IZQUIERDO, buff_filtrado1, BUFFER_SAMPLE_LEN);
+	readData_I2S(IZQUIERDO, buff_filtrado2, BUFFER_SAMPLE_LEN);
 
-	filter_function_eq(buff_filtrado1,buff_filtrado2);
+	//filter_function_co(0,buff_filtrado1,buff_filtrado2);
+	filter_function_eq(buff_filtrado2,buff_filtrado1);
 
 	//4 Realizo el filtrado de cada canal que necesite datos del canal Izquierdo.
 
@@ -326,9 +329,9 @@ void process_filter(){
 			uint8_t left_right = buff.audio_output[i].channel_audio;
 
 			if(left_right == LEFT_CHANNEL_OUTPUT){
-				filter_function_co(channel,buff_filtrado2,buff_filtrado1);
 
-				writeData_I2S(channel,(int16_t *) buff_filtrado1, BUFFER_SAMPLE_LEN,gain_channels[channel]); // va el 1
+				filter_function_co(channel,buff_filtrado1,buff_filtrado2);
+				writeData_I2S(channel,(int16_t *) buff_filtrado2, BUFFER_SAMPLE_LEN,gain_channels[channel]); // va el 1
 
 			}
 		}
