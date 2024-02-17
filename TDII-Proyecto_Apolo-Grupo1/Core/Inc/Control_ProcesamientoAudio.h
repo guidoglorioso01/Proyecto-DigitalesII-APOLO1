@@ -30,7 +30,7 @@
  #define IIR_TAP_NUM_CROSS 	IIR_CANT_COEF 	// -> IIR_CANT_COEF coef por SOS , 1 SOS por IIR
 
 
- #define BUFFER_SAMPLE_LEN  1300//512// 11.6ms de llenado //896*2// 1000
+ #define BUFFER_SAMPLE_LEN  1024//512// 11.6ms de llenado //896*2// 1000
  #define BLOCK_SIZE_FLOAT BUFFER_SAMPLE_LEN
 
 
