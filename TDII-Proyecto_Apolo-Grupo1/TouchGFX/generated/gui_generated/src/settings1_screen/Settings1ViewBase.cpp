@@ -23,6 +23,12 @@ Settings1ViewBase::Settings1ViewBase() :
     Title.setTypedText(touchgfx::TypedText(T_BK_TITLE2));
     BackGroundAndTitle.add(Title);
 
+    Home.setXY(11, 255);
+    Home.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_ICON_ROUNDED_TINY_OUTLINE_DISABLED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_ICON_ROUNDED_TINY_OUTLINE_DISABLED_ID), touchgfx::Bitmap(BITMAP_ICON_THEME_IMAGES_ACTION_HOME_50_50_E8F6FB_SVG_ID), touchgfx::Bitmap(BITMAP_ICON_THEME_IMAGES_ACTION_HOME_50_50_E8F6FB_SVG_ID));
+    Home.setIconXY(6, 6);
+    Home.setAction(buttonCallback);
+    BackGroundAndTitle.add(Home);
+
     add(BackGroundAndTitle);
 
     ButtSetGeneral.setXY(133, 56);
@@ -58,6 +64,7 @@ Settings1ViewBase::Settings1ViewBase() :
     add(ButtSetInAudio);
 
     homeAndBack1.setXY(0, 255);
+    homeAndBack1.setVisible(false);
     add(homeAndBack1);
 }
 
@@ -74,6 +81,13 @@ void Settings1ViewBase::setupScreen()
 
 void Settings1ViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& src)
 {
+    if (&src == &Home)
+    {
+        //Interaction1
+        //When Home clicked change screen to MainScreen
+        //Go to MainScreen with no screen transition
+        application().gotoMainScreenScreenNoTransition();
+    }
     if (&src == &ButtSetGeneral)
     {
         //Interaction3

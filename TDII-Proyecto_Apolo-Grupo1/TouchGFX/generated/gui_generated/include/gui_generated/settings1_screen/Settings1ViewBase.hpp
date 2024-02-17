@@ -11,6 +11,7 @@
 #include <touchgfx/containers/Container.hpp>
 #include <gui/containers/Template.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
+#include <touchgfx/widgets/ButtonWithIcon.hpp>
 #include <touchgfx/widgets/ButtonWithLabel.hpp>
 #include <gui/containers/HomeAndBack.hpp>
 
@@ -33,6 +34,7 @@ protected:
     touchgfx::Container BackGroundAndTitle;
     Template template1;
     touchgfx::TextArea Title;
+    touchgfx::ButtonWithIcon Home;
     touchgfx::ButtonWithLabel ButtSetGeneral;
     touchgfx::ButtonWithLabel ButtSetEcualizador;
     touchgfx::ButtonWithLabel ButtSetCanales;

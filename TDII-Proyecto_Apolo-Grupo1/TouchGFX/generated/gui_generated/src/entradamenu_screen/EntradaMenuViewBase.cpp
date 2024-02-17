@@ -35,14 +35,14 @@ EntradaMenuViewBase::EntradaMenuViewBase() :
     sliderBalance.setXY(222, 148);
     sliderBalance.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_SLIDER_HORIZONTAL_THIN_TRACK_SMALL_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_SLIDER_HORIZONTAL_THIN_TRACK_SMALL_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_SLIDER_HORIZONTAL_THIN_ROUNDED_DARK_ID));
     sliderBalance.setupHorizontalSlider(12, 9, 0, 0, 200);
-    sliderBalance.setValueRange(-50, 50);
-    sliderBalance.setValue(0);
+    sliderBalance.setValueRange(0, 100);
+    sliderBalance.setValue(50);
     sliderBalance.setNewValueCallback(sliderValueChangedCallback);
     add(sliderBalance);
 
     ButtEntradaAudio.setXY(290, 49);
     ButtEntradaAudio.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_TINY_ROUNDED_DISABLED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_TINY_ROUNDED_DISABLED_ID));
-    ButtEntradaAudio.setLabelText(touchgfx::TypedText(T_AUX_INAUDIO));
+    ButtEntradaAudio.setLabelText(touchgfx::TypedText(T_BLUETOOTH_INAUDIO));
     ButtEntradaAudio.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
     ButtEntradaAudio.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
     ButtEntradaAudio.setAction(buttonCallback);

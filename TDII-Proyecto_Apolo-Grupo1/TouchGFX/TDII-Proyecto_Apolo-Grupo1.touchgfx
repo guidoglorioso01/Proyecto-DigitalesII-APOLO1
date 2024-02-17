@@ -301,6 +301,22 @@
                   "Blue": 216
                 },
                 "AutoSize": true
+              },
+              {
+                "Type": "ButtonWithIcon",
+                "Name": "Home",
+                "X": 11,
+                "Y": 255,
+                "Width": 60,
+                "Height": 60,
+                "Pressed": "__generated\\alternate_theme_images_widgets_button_icon_rounded_tiny_outline_disabled.png",
+                "Released": "__generated\\alternate_theme_images_widgets_button_icon_rounded_tiny_outline_disabled.png",
+                "IconPressed": "__generated\\icon_theme_images_action_home_50_50_E8F6FB.svg.png",
+                "IconReleased": "__generated\\icon_theme_images_action_home_50_50_E8F6FB.svg.png",
+                "IconX": 6,
+                "IconY": 6,
+                "IconHeight": 50,
+                "IconWidth": 50
               }
             ]
           },
@@ -398,6 +414,7 @@
             "Y": 255,
             "Width": 480,
             "Height": 67,
+            "Visible": false,
             "CustomContainerDefinitionName": "HomeAndBack"
           }
         ],
@@ -405,11 +422,13 @@
           {
             "InteractionName": "Interaction1",
             "Trigger": {
-              "Type": "TriggerClicked"
+              "Type": "TriggerClicked",
+              "TriggerComponent": "Home"
             },
             "Action": {
               "Type": "ActionGotoScreen",
-              "ScreenTransitionType": "ScreenTransitionNone"
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "MainScreen"
             }
           },
           {
@@ -484,7 +503,7 @@
                 "Name": "Title",
                 "X": 161,
                 "Width": 159,
-                "Height": 36,
+                "Height": 34,
                 "TextId": "__SingleUse_1TKC",
                 "TextRotation": "0",
                 "Color": {
@@ -502,7 +521,7 @@
             "X": 41,
             "Y": 216,
             "Width": 432,
-            "Height": 16,
+            "Height": 18,
             "TextId": "__SingleUse_LMT5",
             "TextRotation": "0",
             "AutoSize": true
@@ -513,7 +532,7 @@
             "X": 6,
             "Y": 46,
             "Width": 43,
-            "Height": 144,
+            "Height": 162,
             "TextId": "__SingleUse_YX6L",
             "TextRotation": "0",
             "AutoSize": true
@@ -965,8 +984,8 @@
             "BackgroundX": 12,
             "BackgroundY": 9,
             "IndicatorMax": 200,
-            "ValueMax": 50,
-            "ValueMin": -50
+            "ValueMax": 100,
+            "InitValue": 50
           },
           {
             "Type": "ButtonWithLabel",
@@ -977,7 +996,7 @@
             "Height": 36,
             "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_36_tiny_rounded_disabled.png",
             "Released": "__generated\\alternate_theme_images_widgets_button_regular_height_36_tiny_rounded_disabled.png",
-            "TextId": "AUX_INAUDIO",
+            "TextId": "Bluetooth_INAUDIO",
             "ReleasedColor": {
               "Red": 255,
               "Green": 255,
@@ -1971,6 +1990,7 @@
       }
     },
     "GenerateAssetsCommand": "make -f simulator/gcc/Makefile assets -j8",
+    "GenerateAssetsCommandOverride": "make -f C:/TouchGFXProjects/MyApplication/simulator/gcc/Makefile assets -j8",
     "PostGenerateCommand": "touchgfx update_project --project-file=simulator/msvs/Application.vcxproj",
     "PostGenerateTargetCommand": "touchgfx update_project",
     "CompileSimulatorCommand": "make -f simulator/gcc/Makefile -j8",

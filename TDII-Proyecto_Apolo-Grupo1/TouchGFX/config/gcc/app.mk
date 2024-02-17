@@ -3,6 +3,6 @@
 touchgfx_path := ../Middlewares/ST/touchgfx
 
 # Location of the TouchGFX Environment
-touchgfx_env := ../../../../../../../ProgramFiles(x86)/STMicroelectronics/env
+touchgfx_env := ../../../../../../ProgramFiles(x86)/STMicroelectronics/env
 # Optional additional compiler flags
 user_cflags := -DUSE_BPP=16

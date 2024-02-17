@@ -274,14 +274,15 @@ void process_filter(){
 
 			uint8_t channel = buff.audio_output[i].channel;
 			uint8_t left_right = buff.audio_output[i].channel_audio;
-
+			float32_t balance_canales =	buff.audio_input.channel_balance/50.0 ;
+			if(balance_canales > 1)balance_canales = 1;
 			// Si usa el canal derecho obtengo la salida sino no hago nada
 
 			if(left_right == RIGHT_CHANNEL_OUTPUT){
 
 
 				filter_function_co(channel,buff_filtrado1,buff_filtrado2);
-				writeData_I2S(channel,(float32_t*) buff_filtrado2, BUFFER_SAMPLE_LEN,gain_channels[channel]); // tegno que poner el buff1
+				writeData_I2S(channel,(float32_t*) buff_filtrado2, BUFFER_SAMPLE_LEN,gain_channels[channel]*balance_canales); // tegno que poner el buff1
 
 			}
 		}
@@ -301,11 +302,13 @@ void process_filter(){
 
 			uint8_t channel = buff.audio_output[i].channel;
 			uint8_t left_right = buff.audio_output[i].channel_audio;
+			float32_t balance_canales = 2-(buff.audio_input.channel_balance/50.0);
+			if(balance_canales > 1)balance_canales = 1;
 
 			if(left_right == LEFT_CHANNEL_OUTPUT){
 
 				filter_function_co(channel,buff_filtrado1,buff_filtrado2);
-				writeData_I2S(channel,(float32_t*) buff_filtrado2, BUFFER_SAMPLE_LEN,gain_channels[channel]); // va el 1
+				writeData_I2S(channel,(float32_t*) buff_filtrado2, BUFFER_SAMPLE_LEN,gain_channels[channel]*balance_canales); // va el 1
 
 			}
 		}
