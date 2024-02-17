@@ -37,7 +37,9 @@ void callbackI2SRx_CMP();
 void callbackI2SRx_HALF();
 void callbackI2STx_CMP();
 void callbackI2STx_HALF();
-
+void callback_TIM1();
+void callbackSPITx_CMP();
+void callbackSPITx_HALF();
 
 //#############################################################################
 //Direccionamiento Ping - Pong Buffering (Double Buffering)
