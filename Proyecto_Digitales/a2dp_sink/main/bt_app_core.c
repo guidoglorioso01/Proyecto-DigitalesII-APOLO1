@@ -252,9 +252,14 @@ size_t write_ringbuf(const uint8_t *data, size_t size)
 
     // codigo que agrego
     uint8_t *volumedData = (uint8_t *)malloc(sizeof(uint8_t)*size);
-    done = xRingbufferSend(s_ringbuf_i2s,(void*) volume_control_changeVolume(data, volumedData, size, master_volume) , size, portMAX_DELAY);
+    if(volumedData != NULL){
+        done = xRingbufferSend(s_ringbuf_i2s,(void*) volume_control_changeVolume(data, volumedData, size, master_volume) , size, portMAX_DELAY);
+        free(volumedData);
+    }
+    else{
+        return 0;
+    }
     // data
-    free(volumedData);
     // fin codigo que agrego
 
     //done = xRingbufferSend(s_ringbuf_i2s, (void *)data, size, (TickType_t)0);

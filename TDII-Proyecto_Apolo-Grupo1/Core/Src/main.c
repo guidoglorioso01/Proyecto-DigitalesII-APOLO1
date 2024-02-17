@@ -17,7 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <process.h>
 #include "main.h"
 #include "cmsis_os.h"
 #include "app_touchgfx.h"
@@ -29,7 +28,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+#include "Driver_I2S.h"
+#include "process.h"
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -69,6 +69,7 @@ SemaphoreHandle_t semProcessData; // semaforo para indicar si se puede tocar o n
 SemaphoreHandle_t semCalcCoefs;
 SemaphoreHandle_t semI2CResource;
 SemaphoreHandle_t semCalcVolume;
+SemaphoreHandle_t semDataReady;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -81,10 +82,10 @@ static void MX_ADC1_Init(void);
 static void MX_CRC_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_I2C1_Init(void);
-static void MX_I2S2_Init(void);
 static void MX_I2S3_Init(void);
-static void MX_SPI1_Init(void);
 static void MX_TIM1_Init(void);
+static void MX_I2S2_Init(void);
+static void MX_SPI1_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
@@ -104,21 +105,31 @@ __HAL_TIM_SET_COUNTER(&htim2,0);
 tim1_cuenta = __HAL_TIM_GET_COUNTER(&htim2);
 */
 
+//I2S 2
 void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s) {
-	callbackI2SRx();
+	callbackI2SRx_CMP();
+}
+void HAL_I2S_RxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+	callbackI2SRx_HALF();
 }
 
 //I2S 3
 void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
-	callbackI2STx();
+	callbackI2STx_CMP();
 }
-
-//SPI 1
+void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
+	callbackI2STx_HALF();
+}
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) {
-	callbackSPITx();
+	callbackSPITx_CMP();
+}
+void HAL_SPI_TxHalfCallback(SPI_HandleTypeDef *hspi) {
+	callbackSPITx_HALF();
 }
 
+void HAL_TIM_TriggerCallback(TIM_HandleTypeDef *htim){
 
+}
 /* USER CODE END 0 */
 
 /**
@@ -158,10 +169,10 @@ int main(void)
   MX_CRC_Init();
   MX_TIM2_Init();
   MX_I2C1_Init();
-  MX_I2S2_Init();
   MX_I2S3_Init();
-  MX_SPI1_Init();
   MX_TIM1_Init();
+  MX_I2S2_Init();
+  MX_SPI1_Init();
   MX_TouchGFX_Init();
   /* Call PreOsInit function */
   MX_TouchGFX_PreOSInit();
@@ -481,11 +492,11 @@ static void MX_SPI1_Init(void)
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.DataSize = SPI_DATASIZE_16BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -550,7 +561,7 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_TOGGLE;
-  sConfigOC.Pulse = 7;
+  sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;

@@ -27,13 +27,14 @@ uint8_t *volume_control_changeVolume(const uint8_t *data, uint8_t *outputData, s
     int channel = 0;
     
     memcpy(outputData, data, size);
+
     size_t h = 0;
    
     if(xQueueReceive(queue_correccion,&dato_recibido,0) == pdPASS ){ // Pude retirar un dato de la queue
         correccion = dato_recibido;
         //printf("Correccion: %f\n",correccion);
     }
-
+    //printf("%i\n",size); 3584
     for (h = 0; h < size; h += numBytesShifted) {
 
         pcmData = ((uint16_t) data[h +1 ] << 8) | data[h];
@@ -140,7 +141,7 @@ void volume_task_handler(void *arg){
  * @param data_out Vector de salida de datos
  * @param len_data Cantidad de datos en data_in
  */
-void filter_data(QueueHandle_t queue_datos,float32_t* data_out){
+uint8_t filter_data(QueueHandle_t queue_datos,float32_t* data_out){
     
     int16_t data;
 
@@ -148,22 +149,22 @@ void filter_data(QueueHandle_t queue_datos,float32_t* data_out){
         
     if(buff==NULL){
         ESP_LOGE(LOUD_TAG, "error");
-        return;
+        return 0;
     }
     
     float w[5] = {0,0};
-    //static uint8_t pito =0;
 
     for(int i=0;i<SUB_WINDOW_LEN;i++){  
         xQueueReceive(queue_datos,&data,portMAX_DELAY);
   
         data_out[i] = data;
     }
-    //pito = 1;
+
     dsps_biquad_f32_ae32((float*)data_out,buff, SUB_WINDOW_LEN,(float*) Coeff_firs_stage, w);
     dsps_biquad_f32_ae32((float*)buff,data_out, SUB_WINDOW_LEN,(float*) Coeff_second_stage, w);
     
     free(buff);
+    return 1;
 }
 
 void reset_loudness_alg(){
@@ -200,7 +201,7 @@ uint8_t loudness_algoritmo(float32_t target_loundness,float32_t *correction){
     float32_t **buff_filtered = (float32_t **)malloc( NUM_CHANNELS * sizeof(float32_t));
     
     if(buff_filtered==NULL){
-        ESP_LOGE(LOUD_TAG, "error");
+        ESP_LOGE(LOUD_TAG, "error malloc 1");
         return 7;
     }
 
@@ -208,26 +209,38 @@ uint8_t loudness_algoritmo(float32_t target_loundness,float32_t *correction){
         buff_filtered[i] = (float32_t *)malloc(SUB_WINDOW_LEN * sizeof(float32_t));
             
         if(buff_filtered[i]==NULL){
-            ESP_LOGE(LOUD_TAG, "error");
+            for(int i2=0;i2<i;i2++){ // Agrego
+                free(buff_filtered[i2]);
+            }
+            free(buff_filtered); //
+            ESP_LOGE(LOUD_TAG, "error malloc 2");
             return 7;
         }
         
     }
-    
+    uint8_t state_filter;
     // Realizo filtrados a señal de entrada
     for(int i=0;i < NUM_CHANNELS;i++){
         #ifdef STEREO
 
         if(i == 0)
-            filter_data(queue_data_out_izq,buff_filtered[i]);    
+            state_filter = filter_data(queue_data_out_izq,buff_filtered[i]);    
         else
-            filter_data(queue_data_out_der,buff_filtered[i]);
+            state_filter = filter_data(queue_data_out_der,buff_filtered[i]);
 
         #else
 
-        filter_data(queue_data_out_izq,buff_filtered[i]);
+        state_filter = filter_data(queue_data_out_izq,buff_filtered[i]);
 
         #endif
+
+        if(!state_filter){
+            for(int i2=0;i2<NUM_CHANNELS;i2++){ // Agrego
+                free(buff_filtered[i2]);
+            }
+            free(buff_filtered); //
+            return 7;
+        }
     }
 
     // Obtengo las subventanas de las muestras (Tg) pasadas en la funcion
@@ -267,7 +280,7 @@ uint8_t loudness_algoritmo(float32_t target_loundness,float32_t *correction){
     float32_t **buff_windows = (float32_t **)malloc( NUM_CHANNELS * sizeof(float32_t));
     
     if(buff_windows==NULL){
-        ESP_LOGE(LOUD_TAG, "error");
+        ESP_LOGE(LOUD_TAG, "error malloc 3");
         return 7;
     }
     
@@ -275,7 +288,11 @@ uint8_t loudness_algoritmo(float32_t target_loundness,float32_t *correction){
         buff_windows[i] = (float32_t *)malloc(MAX_QUEUE_SIZE * sizeof(float32_t));
         
         if(buff_windows[i]==NULL){
-            ESP_LOGE(LOUD_TAG, "error");
+            for(int i2=0;i2<i;i2++){ // Agrego
+                free(buff_windows[i2]);
+            }
+            free(buff_windows); //
+            ESP_LOGE(LOUD_TAG, "error malloc 4");
             return 7;
         }   
     }
@@ -283,7 +300,11 @@ uint8_t loudness_algoritmo(float32_t target_loundness,float32_t *correction){
     float32_t **z_ij = (float32_t **)malloc( NUM_CHANNELS * sizeof(float32_t));
     
     if(z_ij==NULL){
-        ESP_LOGE(LOUD_TAG, "error");
+        for(int i2=0;i2<NUM_CHANNELS;i2++){ // Agrego
+            free(buff_windows[i2]);
+        }
+        free(buff_windows); //
+        ESP_LOGE(LOUD_TAG, "error malloc 5");
         return 7;
     }
     
@@ -291,7 +312,16 @@ uint8_t loudness_algoritmo(float32_t target_loundness,float32_t *correction){
         z_ij[i] = (float32_t *)malloc(NUMBER_OF_WINDOWS * sizeof(float32_t));
              
         if(z_ij[i]==NULL){
-            ESP_LOGE(LOUD_TAG, "error");
+            for(int i2=0;i2<i;i2++){ // Agrego
+                free(z_ij[i2]);
+            }
+            free(z_ij); //
+
+            for(int i2=0;i2<NUM_CHANNELS;i2++){ // Agrego
+                free(buff_windows[i2]);
+            }
+            free(buff_windows); //
+            ESP_LOGE(LOUD_TAG, "error malloc 6");
             return 7;
         }
         
@@ -322,7 +352,11 @@ uint8_t loudness_algoritmo(float32_t target_loundness,float32_t *correction){
     float *loudness_j = (float *)malloc( NUMBER_OF_WINDOWS * sizeof(float));
   
     if(loudness_j==NULL){
-        ESP_LOGE(LOUD_TAG, "error");
+        for(int i2=0;i2<NUM_CHANNELS;i2++){ // Agrego
+            free(z_ij[i2]);
+        }
+        free(z_ij); //
+        ESP_LOGE(LOUD_TAG, "error malloc 7");
         return 7;
     }
 

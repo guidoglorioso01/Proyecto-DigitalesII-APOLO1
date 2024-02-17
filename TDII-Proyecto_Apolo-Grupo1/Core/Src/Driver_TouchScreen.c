@@ -50,6 +50,10 @@ void mde_TS(){
 		break;
 		case VALIDO:
 			flag_dato = 1;
+
+		//coords_TS.x = 480 - coords_TS.x;// Descomentar para invertir touch
+		//coords_TS.y = 320 - coords_TS.y;
+
 			_valueCoords = coords_TS; // @suppress("No break at end of case")
 		case BUG_PIXEL:
 		case REBOTE:
