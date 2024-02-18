@@ -28,6 +28,8 @@
 #include <gui/crossovermenu_screen/CrossOverMenuPresenter.hpp>
 #include <gui/generalmenu_screen/GeneralMenuView.hpp>
 #include <gui/generalmenu_screen/GeneralMenuPresenter.hpp>
+#include <gui/resetmenu_screen/ResetMenuView.hpp>
+#include <gui/resetmenu_screen/ResetMenuPresenter.hpp>
 
 
 /**
@@ -58,7 +60,8 @@ public:
             touchgfx::meta::TypeList< CanalesMenuView,
             touchgfx::meta::TypeList< CrossOverMenuView,
             touchgfx::meta::TypeList< GeneralMenuView,
-            touchgfx::meta::Nil > > > > > > >
+            touchgfx::meta::TypeList< ResetMenuView,
+            touchgfx::meta::Nil > > > > > > > >
             > GeneratedViewTypes;
 
     /**
@@ -78,7 +81,8 @@ public:
             touchgfx::meta::TypeList< CanalesMenuPresenter,
             touchgfx::meta::TypeList< CrossOverMenuPresenter,
             touchgfx::meta::TypeList< GeneralMenuPresenter,
-            touchgfx::meta::Nil > > > > > > >
+            touchgfx::meta::TypeList< ResetMenuPresenter,
+            touchgfx::meta::Nil > > > > > > > >
             > GeneratedPresenterTypes;
 
     /**

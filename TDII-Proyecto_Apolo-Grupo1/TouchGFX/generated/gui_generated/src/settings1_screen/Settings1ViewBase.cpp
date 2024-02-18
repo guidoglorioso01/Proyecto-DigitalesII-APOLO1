@@ -31,7 +31,14 @@ Settings1ViewBase::Settings1ViewBase() :
 
     add(BackGroundAndTitle);
 
-    ButtSetGeneral.setXY(133, 56);
+    ButtSetCanales_1.setXY(133, 190);
+    ButtSetCanales_1.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
+    ButtSetCanales_1.setLabelText(touchgfx::TypedText(T___SINGLEUSE_CDHP));
+    ButtSetCanales_1.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    ButtSetCanales_1.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    add(ButtSetCanales_1);
+
+    ButtSetGeneral.setXY(133, 49);
     ButtSetGeneral.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
     ButtSetGeneral.setLabelText(touchgfx::TypedText(T___SINGLEUSE_QQXB));
     ButtSetGeneral.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
@@ -39,7 +46,7 @@ Settings1ViewBase::Settings1ViewBase() :
     ButtSetGeneral.setAction(buttonCallback);
     add(ButtSetGeneral);
 
-    ButtSetEcualizador.setXY(133, 111);
+    ButtSetEcualizador.setXY(133, 96);
     ButtSetEcualizador.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
     ButtSetEcualizador.setLabelText(touchgfx::TypedText(T___SINGLEUSE_WHNC));
     ButtSetEcualizador.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
@@ -47,15 +54,15 @@ Settings1ViewBase::Settings1ViewBase() :
     ButtSetEcualizador.setAction(buttonCallback);
     add(ButtSetEcualizador);
 
-    ButtSetCanales.setXY(133, 226);
-    ButtSetCanales.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
-    ButtSetCanales.setLabelText(touchgfx::TypedText(T___SINGLEUSE_02MN));
-    ButtSetCanales.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
-    ButtSetCanales.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
-    ButtSetCanales.setAction(buttonCallback);
-    add(ButtSetCanales);
+    ButtResetData.setXY(133, 237);
+    ButtResetData.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
+    ButtResetData.setLabelText(touchgfx::TypedText(T___SINGLEUSE_02MN));
+    ButtResetData.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    ButtResetData.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    ButtResetData.setAction(buttonCallback);
+    add(ButtResetData);
 
-    ButtSetInAudio.setXY(133, 167);
+    ButtSetInAudio.setXY(133, 142);
     ButtSetInAudio.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
     ButtSetInAudio.setLabelText(touchgfx::TypedText(T___SINGLEUSE_5BLT));
     ButtSetInAudio.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
@@ -102,12 +109,12 @@ void Settings1ViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& sr
         //Go to EcualizadorMenu with no screen transition
         application().gotoEcualizadorMenuScreenNoTransition();
     }
-    if (&src == &ButtSetCanales)
+    if (&src == &ButtResetData)
     {
         //Interaction5
-        //When ButtSetCanales clicked change screen to CanalesMenu
-        //Go to CanalesMenu with no screen transition
-        application().gotoCanalesMenuScreenNoTransition();
+        //When ButtResetData clicked change screen to ResetMenu
+        //Go to ResetMenu with no screen transition
+        application().gotoResetMenuScreenNoTransition();
     }
     if (&src == &ButtSetInAudio)
     {

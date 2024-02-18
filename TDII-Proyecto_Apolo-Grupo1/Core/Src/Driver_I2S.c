@@ -43,6 +43,7 @@ extern SemaphoreHandle_t semDataReady;
 //Init
 //#############################################################################
 void initI2SDriver() {
+
 	semRx_I2S = xSemaphoreCreateBinary();
 	semTxAB_I2S = xSemaphoreCreateBinary();
 	semTxCD_I2S = xSemaphoreCreateBinary();
@@ -56,7 +57,15 @@ void initI2SDriver() {
 	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
 	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
 
+	vTaskPrioritySet(NULL, tskIDLE_PRIORITY + 3);
+	vTaskDelay(pdMS_TO_TICKS(1000));
+
+	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
+	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
+
+
 	HAL_I2S_Receive_DMA(&hi2s2,(uint16_t *) bufferIn, PINPONG_BUFF_SIZE);
+
 
 }
 
@@ -143,6 +152,9 @@ void callbackI2STx_HALF() {
 //Task recieve
 //#############################################################################
 void task_I2S_recieve() {
+
+	initI2SDriver();
+
 	while(1) {
 
 	// Revizo si se termino de recibir y enviar los datos

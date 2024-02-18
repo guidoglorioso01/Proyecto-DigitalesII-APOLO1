@@ -34,9 +34,9 @@ void init_tasks(){
 	xTaskCreate(TouchGFX_Task, "UPD GFX", 3000, NULL, tskIDLE_PRIORITY + 2, NULL);
 	xTaskCreate(FilterData_process, "ProcessData", 2000, NULL, tskIDLE_PRIORITY + 3 ,NULL); 		// se le debe dar la mayor prioridad
 	xTaskCreate(CalculateCoefs_process, "CalcCoefsData", 500, NULL, tskIDLE_PRIORITY + 3 ,NULL); 	// Process que calcula los coeficientes aun mas prioridad para tenerlos listos antes de convertir
-	xTaskCreate(task_I2S_recieve, "Audio In", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3 ,NULL);	// Recepcion datos I2S -> Prioridad una menos que la de procesamiento
+	xTaskCreate(task_I2S_recieve, "Audio In", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);	// Recepcion datos I2S -> Prioridad una menos que la de procesamiento
 
-	initI2SDriver();
+
 }
 
 

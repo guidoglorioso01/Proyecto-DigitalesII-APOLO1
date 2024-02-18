@@ -8,6 +8,7 @@
 #include <texts/TextKeysAndLanguages.hpp>
 #include <touchgfx/Texts.hpp>
 #include <touchgfx/hal/HAL.hpp>
+#include <platform/driver/lcd/LCD16bpp.hpp>
 #include <gui/mainscreen_screen/MainScreenView.hpp>
 #include <gui/mainscreen_screen/MainScreenPresenter.hpp>
 #include <gui/settings1_screen/Settings1View.hpp>
@@ -24,6 +25,8 @@
 #include <gui/crossovermenu_screen/CrossOverMenuPresenter.hpp>
 #include <gui/generalmenu_screen/GeneralMenuView.hpp>
 #include <gui/generalmenu_screen/GeneralMenuPresenter.hpp>
+#include <gui/resetmenu_screen/ResetMenuView.hpp>
+#include <gui/resetmenu_screen/ResetMenuPresenter.hpp>
 
 using namespace touchgfx;
 
@@ -35,6 +38,8 @@ FrontendApplicationBase::FrontendApplicationBase(Model& m, FrontendHeap& heap)
 {
     touchgfx::HAL::getInstance()->setDisplayOrientation(touchgfx::ORIENTATION_LANDSCAPE);
     touchgfx::Texts::setLanguage(GB);
+    reinterpret_cast<touchgfx::LCD16bpp&>(touchgfx::HAL::lcd()).enableTextureMapperAll();
+    reinterpret_cast<touchgfx::LCD16bpp&>(touchgfx::HAL::lcd()).enableDecompressorL8_All();
 }
 
 /*
@@ -143,4 +148,17 @@ void FrontendApplicationBase::gotoGeneralMenuScreenNoTransition()
 void FrontendApplicationBase::gotoGeneralMenuScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<GeneralMenuView, GeneralMenuPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+// ResetMenu
+
+void FrontendApplicationBase::gotoResetMenuScreenNoTransition()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplicationBase::gotoResetMenuScreenNoTransitionImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoResetMenuScreenNoTransitionImpl()
+{
+    touchgfx::makeTransition<ResetMenuView, ResetMenuPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
