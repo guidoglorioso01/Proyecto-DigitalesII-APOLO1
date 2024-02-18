@@ -92,39 +92,6 @@ void reset_userdata(){
 	init_userdata();
 }
 
-//void Get_CrossOver_coef(uint8_t type_crossover,uint8_t *buff_coef){
-//	/*
-//	 * Funcion que recibe como parametro un vector que debe tener almenos 7 posiciones
-//	 * y completo en el los coeficientes del cross over pedido
-//	 *
-//	 * */
-//
-//	switch(type_crossover){
-//	case TYPE_LP1:
-//		CARGAR_CROSSOVER(buff_coef,0,0,0,0,0,0,0);
-//	break;
-//	case TYPE_LP2:
-//		CARGAR_CROSSOVER(buff_coef,0,0,0,0,0,0,0);
-//	break;
-//	case TYPE_BP1:
-//		CARGAR_CROSSOVER(buff_coef,0,0,0,0,0,0,0);
-//	break;
-//	case TYPE_BP2:
-//		CARGAR_CROSSOVER(buff_coef,0,0,0,0,0,0,0);
-//	break;
-//	case TYPE_HP1:
-//		CARGAR_CROSSOVER(buff_coef,0,0,0,0,0,0,0);
-//	break;
-//	case TYPE_HP2:
-//		CARGAR_CROSSOVER(buff_coef,0,0,0,0,0,0,0);
-//	break;
-//	default:
-//	case TYPE_FLAT:
-//		CARGAR_CROSSOVER(buff_coef,0,0,0,0,0,0,0);
-//	break;
-//	}
-//
-//}
 
 
 /*
