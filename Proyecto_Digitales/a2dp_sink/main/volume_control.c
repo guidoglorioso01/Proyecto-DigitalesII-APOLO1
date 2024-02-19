@@ -15,9 +15,10 @@ float coeffs_lpf[5];
 
 uint8_t correccion_loudness = 0;
 float32_t loudness_target = 60;
-
+TaskHandle_t handler_task_loudness;
+float ganancia = 0;
 //the following code changes the volume
-uint8_t *volume_control_changeVolume(const uint8_t *data, uint8_t *outputData, size_t size, uint8_t volume) {
+uint8_t *volume_control_changeVolume(const uint8_t *data, uint8_t *outputData, size_t size, float volume) {
     const int numBytesShifted = 2;
 
      int16_t pcmData;
@@ -29,47 +30,60 @@ uint8_t *volume_control_changeVolume(const uint8_t *data, uint8_t *outputData, s
     memcpy(outputData, data, size);
 
     size_t h = 0;
+
+    if(correccion_loudness == 1){
+        if(xQueueReceive(queue_correccion,&dato_recibido,0) == pdPASS ){ // Pude retirar un dato de la queue
+            correccion = dato_recibido;
+            //printf("Correccion: %f\n",correccion);
+        }
+        for (h = 0; h < size; h += numBytesShifted) {
+
+            pcmData = ((uint16_t) data[h +1 ] << 8) | data[h];
+            buff =(float) (pcmData * correccion * volume); // correccion
+            pcmData =(int16_t) buff;
+            outputData[h+1] = pcmData >> 8;
+            outputData[h] = pcmData;
+            #ifdef STEREO
+            if(channel){                
+                xQueueSend(queue_data_out_izq,&pcmData,0);
+            }
+            else{
+            xQueueSend(queue_data_out_der,&pcmData,0);
+            }
+            #else
+            if(channel){                
+                xQueueSend(queue_data_out_izq,&pcmData,0);
+            }
+            #endif
+        
+            
+            channel = !channel;
+        }
+    }
+    else{
+
+        for (h = 0; h < size; h += numBytesShifted) {
+            pcmData = ((uint16_t) data[h +1 ] << 8) | data[h];
+            buff =(float) (pcmData * 1 * volume); // correccion
+            pcmData =(int16_t) buff;
+            outputData[h+1] = pcmData >> 8;
+            outputData[h] = pcmData;
+        }
+    }
    
-    if(xQueueReceive(queue_correccion,&dato_recibido,0) == pdPASS ){ // Pude retirar un dato de la queue
-        correccion = dato_recibido;
-        //printf("Correccion: %f\n",correccion);
-    }
-    //printf("%i\n",size); 3584
-    for (h = 0; h < size; h += numBytesShifted) {
-
-        pcmData = ((uint16_t) data[h +1 ] << 8) | data[h];
-        if(correccion_loudness == 0) // verifico si esta activado
-            buff =(float) (pcmData * 1); // correccion
-        else
-            buff =(float) (pcmData * correccion); // correccion
-        pcmData =(int16_t) buff;
-        outputData[h+1] = pcmData >> 8;
-        outputData[h] = pcmData;
-
-        
-        #ifdef STEREO
-        
-        if(channel){                
-            xQueueSend(queue_data_out_izq,&pcmData,0);
-        }
-         else{
-           xQueueSend(queue_data_out_der,&pcmData,0);
-        }
-        
-        #else
-
-        if(channel){                
-            xQueueSend(queue_data_out_izq,&pcmData,0);
-        }
-        #endif
-       
-        
-        channel = !channel;
-    }
    
     return outputData;
 }
 
+
+void volume_task_reset(){
+    
+    for(uint32_t c=0;c < NUM_CHANNELS;c++){
+        clearQueue(&sub_windows[c]);
+    }
+
+    ganancia = 0;
+}
 
 void volume_task_start_up(){
 
@@ -99,18 +113,20 @@ float32_t abs_float(float32_t num){
     return num;
 }
 
+
+
 void volume_task_handler(void *arg){
     float32_t loudness_relativo;
-    static float32_t ganancia;
+    //static float32_t ganancia=0;
     float32_t correccion;
     uint16_t K =5;
     uint16_t h = 3;
     float32_t loudness =0;
 
     while(1){
-
+        if(correccion_loudness == 1){
             if(loudness_algoritmo(loudness_target, &loudness_relativo)==1){ 
-                //ESP_LOGI(LOUD_TAG, "loudness: %.3f \n", loudness_relativo);
+                ESP_LOGI(LOUD_TAG, "Loud: %.3f ; ganancia: %.3f ; Loud_target: %.3f\n",loudness_relativo,ganancia,loudness_target);
                 //printf("Loud: %.3f ; ganancia: %.3f ; Loud_target: %.3f\n",loudness_relativo,ganancia,loudness_target);
                 //printf("%.3f,",loudness_relativo);  
 
@@ -120,12 +136,17 @@ void volume_task_handler(void *arg){
                     correccion = pow(10,(ganancia/20));
                     xQueueSend(queue_correccion,&correccion,0);
                 }
-                  
+                    
             }
         correccion = 0;
         
         xQueueReset(queue_data_out_izq); // Borro todo lo que se haya almacenado      
         //vTaskDelay(pdMS_TO_TICKS(20));
+        }
+        else{
+            vTaskDelay(pdMS_TO_TICKS(20));
+        }
+
     }
 
 }
@@ -167,12 +188,6 @@ uint8_t filter_data(QueueHandle_t queue_datos,float32_t* data_out){
     return 1;
 }
 
-void reset_loudness_alg(){
-    
-     for(uint32_t c=0;c < NUM_CHANNELS;c++){
-        clearQueue(&sub_windows[c]);
-    }
-}
 /**
  * @brief 
  * Esta funcion recibe un buffer de time_gate segundos muestreados a una Fs frecuencia, y un loudness objetivo (loudness target).

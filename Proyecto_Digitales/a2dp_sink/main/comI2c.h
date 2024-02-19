@@ -23,12 +23,14 @@
 #define STOP_SONG_CMD 0x17
 #define LOUD_CONFIG_CMD 0x18
 #define GET_MUSIC_STATE_CMD 0x19
+#define GET_BT_STATE_CMD 0x20
 
 #define DEBUG 1 // Poner en 1 para debug
 #define SLAVE_ADDR 0x18
 #define DATA_LENGTH 512                  /*!< Data buffer length of test buffer */
 #define STRUCT_LENGHT 64 
-
+#define BT_CONNECTED 1
+#define BT_DISCONNECTED 2
 
 #define I2C_SLAVE_SCL_IO GPIO_NUM_19                        /*!< gpio number for i2c slave clock */
 #define I2C_SLAVE_SDA_IO GPIO_NUM_18                        /*!< gpio number for i2c slave data */

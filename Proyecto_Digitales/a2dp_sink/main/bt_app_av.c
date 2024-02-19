@@ -71,7 +71,8 @@ static void bt_av_hdl_avrc_ct_evt(uint16_t event, void *p_param);
 static void bt_av_hdl_avrc_tg_evt(uint16_t event, void *p_param);
 
 
-uint8_t master_volume;
+float master_volume=1;
+uint8_t bt_state_global=2;
 /*******************************
  * STATIC VARIABLE DEFINITIONS
  ******************************/
@@ -250,8 +251,8 @@ static void volume_set_by_controller(uint8_t volume)
     s_volume = volume;
     _lock_release(&s_volume_lock);
 
-    master_volume = (uint8_t)((s_volume / 127.0) * 16.0 + .5);
-    // ESP_LOGI(BT_RC_TG_TAG, "Mastervolume is %d\n", master_volume);
+    master_volume = (float)((s_volume / 127.0) );
+    ESP_LOGI(BT_RC_TG_TAG, "Mastervolume is %f\n", master_volume);
     // esp_avrc_rn_param_t rn_param;
     // rn_param.volume = volume;
 
@@ -274,6 +275,7 @@ static void volume_set_by_local_host(uint8_t volume)
         rn_param.volume = s_volume;
         esp_avrc_tg_send_rn_rsp(ESP_AVRC_RN_VOLUME_CHANGE, ESP_AVRC_RN_RSP_CHANGED, &rn_param);
         s_volume_notify = false;
+        //printf("Entro en volume set by local host - volumen: %i\n",rn_param.volume);
     }
 }
 
@@ -306,11 +308,16 @@ static void bt_av_hdl_a2d_evt(uint16_t event, void *p_param)
             esp_bt_gap_set_scan_mode(ESP_BT_CONNECTABLE, ESP_BT_GENERAL_DISCOVERABLE);
             bt_i2s_driver_uninstall();
             bt_i2s_task_shut_down();
+            bt_state_global = 2; // 2 significa desconectado
         } else if (a2d->conn_stat.state == ESP_A2D_CONNECTION_STATE_CONNECTED){
             esp_bt_gap_set_scan_mode(ESP_BT_NON_CONNECTABLE, ESP_BT_NON_DISCOVERABLE);
             bt_i2s_task_start_up();
+            bt_state_global = 1; // 1 significa conectado 
         } else if (a2d->conn_stat.state == ESP_A2D_CONNECTION_STATE_CONNECTING) {
             bt_i2s_driver_install();
+            bt_state_global = 1; // 1 significa conectado 
+            
+
         }
         break;
     }
@@ -382,6 +389,7 @@ static void bt_av_hdl_a2d_evt(uint16_t event, void *p_param)
         a2d = (esp_a2d_cb_param_t *)(p_param);
         if (ESP_A2D_INIT_SUCCESS == a2d->a2d_prof_stat.init_state) {
             ESP_LOGI(BT_AV_TAG, "A2DP PROF STATE: Init Complete");
+
         } else {
             ESP_LOGI(BT_AV_TAG, "A2DP PROF STATE: Deinit Complete");
         }
@@ -520,6 +528,7 @@ static void bt_av_hdl_avrc_tg_evt(uint16_t event, void *p_param)
     case ESP_AVRC_TG_SET_ABSOLUTE_VOLUME_CMD_EVT: {
         ESP_LOGI(BT_RC_TG_TAG, "AVRC set absolute volume: %d%%", (int)rc->set_abs_vol.volume * 100 / 0x7f);
         volume_set_by_controller(rc->set_abs_vol.volume);
+        //printf("Entro en ESP_AVRC_TG_SET_ABSOLUTE_VOLUME - volumen: %i \n",rc->set_abs_vol.volume);
         break;
     }
     /* when notification registered, this event comes */
@@ -613,4 +622,9 @@ void bt_app_rc_tg_cb(esp_avrc_tg_cb_event_t event, esp_avrc_tg_cb_param_t *param
         ESP_LOGE(BT_RC_TG_TAG, "Invalid AVRC event: %d", event);
         break;
     }
+}
+void init_i2s_all(){
+    bt_sincro_startup(); 
+    bt_i2s_driver_install();
+
 }

@@ -49,7 +49,7 @@
 
 #define GAMA_A -70 // LKFS
 
-#define MAX_LOUDNESS 1778 //lo escribo en veces 65db
+#define MAX_LOUDNESS 1200 //lo escribo en veces 65db
 #define MIN_LOUDNESS 10// lo escribo en veces 20db
 
 typedef unsigned char uint8_t;
@@ -57,17 +57,19 @@ typedef signed char   int8_t ;
 typedef float         float32_t;
 
 //the following code changes the volume
-uint8_t * volume_control_changeVolume(const uint8_t *data, uint8_t *outputData, size_t size, uint8_t volume);
+uint8_t * volume_control_changeVolume(const uint8_t *data, uint8_t *outputData, size_t size, float volume);
 float32_t abs_float(float32_t num);
 uint8_t loudness_algoritmo(float32_t target_loundness,float32_t *correction);
 uint8_t filter_data(QueueHandle_t queue_datos ,float32_t* data_out);
 //void ingresar_datos_medicion(uint8_t *data,size_t size );
 void volume_task_handler(void *arg);
 void volume_task_start_up();
-void reset_loudness_alg();
+void volume_task_reset();
+
 
 uint8_t isnumber(const char caracter);
 void terminal_task_start_up();
 void terminal_task_handler(void *arg);
+
 #endif
 

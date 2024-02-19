@@ -23,6 +23,8 @@ extern float loudness_target;
 uint32_t tiempo_total=0;
 uint32_t tiempo_actual=0;
 
+extern uint8_t bt_state_global;
+
 /////////////////////////////////////// Tasks ////////////////////////////////////////////////
 void i2c_task (void* parameters){
     int8_t size = 0;
@@ -88,6 +90,7 @@ static esp_err_t i2c_slave_init(void)
 uint8_t anlyses_message(uint8_t command){
     int8_t err = 0;
     static uint8_t progreso = 0;
+
     switch(command){
         case LOAD_CONFIG_CMD: // Se pasa la configuracion a guardar.
             vTaskDelay(pdMS_TO_TICKS(300)); // Espero 300 ms para recibir todo.
@@ -198,7 +201,7 @@ uint8_t anlyses_message(uint8_t command){
                 return ERROR;
             }
             if(correccion_loudness == 0)
-                reset_loudness_alg();
+                volume_task_reset();
             #if DEBUG    
             printf("Se seteo el loudness en %f, y se encuentra en un estado %i\n",loudness_target,correccion_loudness);
             #endif
@@ -217,6 +220,17 @@ uint8_t anlyses_message(uint8_t command){
                 if(err == ESP_FAIL)
                     return ERROR;
         
+        break;
+        case GET_BT_STATE_CMD: // Se pide el nivel de progreso de la cancion
+            i2c_reset_tx_fifo(I2C_SLAVE_NUM);
+          
+            err = i2c_slave_write_buffer(I2C_SLAVE_NUM,(const uint8_t *)&bt_state_global,1,pdMS_TO_TICKS(100));
+            #if DEBUG    
+            printf("Estado del bt en: %i\n",bt_state_global);
+            #endif
+            if(err == ESP_FAIL)
+                return ERROR;
+    
         break;
         default:
         #if DEBUG    

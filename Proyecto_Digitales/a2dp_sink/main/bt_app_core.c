@@ -24,7 +24,7 @@
 
 #include "volume_control.h"
 
-extern uint8_t master_volume;
+extern float master_volume;
 
 
 #define RINGBUF_HIGHEST_WATER_LEVEL    (32 * 1024)
@@ -203,10 +203,11 @@ void bt_app_task_shut_down(void)
     }
 }
 
+void bt_sincro_startup(void){
+
+}
 void bt_i2s_task_start_up(void)
 {
-    ESP_LOGI(BT_APP_CORE_TAG, "ringbuffer data empty! mode changed: RINGBUFFER_MODE_PREFETCHING");
-    ringbuffer_mode = RINGBUFFER_MODE_PREFETCHING;
     if ((s_i2s_write_semaphore = xSemaphoreCreateBinary()) == NULL) {
         ESP_LOGE(BT_APP_CORE_TAG, "%s, Semaphore create failed", __func__);
         return;
@@ -215,6 +216,9 @@ void bt_i2s_task_start_up(void)
         ESP_LOGE(BT_APP_CORE_TAG, "%s, ringbuffer create failed", __func__);
         return;
     }
+    ESP_LOGI(BT_APP_CORE_TAG, "ringbuffer data empty! mode changed: RINGBUFFER_MODE_PREFETCHING");
+    ringbuffer_mode = RINGBUFFER_MODE_PREFETCHING;
+
     xTaskCreate(bt_i2s_task_handler, "BtI2STask", 2048, NULL, configMAX_PRIORITIES - 3, &s_bt_i2s_task_handle);
 }
 
@@ -282,3 +286,4 @@ size_t write_ringbuf(const uint8_t *data, size_t size)
 
     return done ? size : 0;
 }
+

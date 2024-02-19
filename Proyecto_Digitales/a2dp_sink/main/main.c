@@ -28,7 +28,7 @@
 #include "volume_control.h"
 
 /* device name */
-#define LOCAL_DEVICE_NAME    "ESP_SPEAKER"
+#define LOCAL_DEVICE_NAME    "APOLO 1"
 
 /* event for stack up */
 enum {
@@ -200,8 +200,12 @@ void app_main(void)
     pin_code[3] = '4';
     esp_bt_gap_set_pin(pin_type, 4, pin_code);
 
-    
+    //volume_sincronization_init();
     volume_task_start_up();
+
+    //init_i2s_all();
+
+    
     bt_app_task_start_up();
     /* bluetooth device name, connection mode and profile set up */
     bt_app_work_dispatch(bt_av_hdl_stack_evt, BT_APP_EVT_STACK_UP, NULL, 0, NULL);
