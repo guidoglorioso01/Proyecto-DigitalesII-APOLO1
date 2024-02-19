@@ -161,7 +161,36 @@ uint8_t get_music_estate_esp(){
 
 	return temp;
 }
+uint8_t get_bt_estate_esp(){
+	uint8_t nbr_of_try = 0;
+	uint8_t temp=0;
+	xSemaphoreTake(semI2CResource,portMAX_DELAY);
+	do{
+		Buffer_tx[0] = GET_BT_STATE_CMD;
+		HAL_I2C_Master_Transmit(&hi2c1, SLAVE_ADDR, Buffer_tx , 1 ,HAL_MAX_DELAY); // Envio comando de estado BT
 
+		vTaskDelay(300);
+
+		HAL_I2C_Master_Receive(&hi2c1,SLAVE_ADDR,Buffer_rx,1,HAL_MAX_DELAY);
+
+		temp = Buffer_rx[0]; // Recibo el porcentaje de la cancion que se encuentra reproducido
+
+		Buffer_tx[0] = STATE_COMAND_CMD;
+
+		HAL_I2C_Master_Transmit(&hi2c1, SLAVE_ADDR, Buffer_tx , 1 ,HAL_MAX_DELAY); // Envio comando de verificar estado previo
+
+		vTaskDelay(300);
+
+		HAL_I2C_Master_Receive(&hi2c1,SLAVE_ADDR,Buffer_rx,1,HAL_MAX_DELAY);
+
+		nbr_of_try++;
+	}while((Buffer_rx[0] != COMAND_OK)&&(nbr_of_try<MAX_CMD_SEND));
+	xSemaphoreGive(semI2CResource);
+	if(nbr_of_try >= MAX_CMD_SEND)
+		return COMAND_FAILED;
+
+	return temp;
+}
 void give_sem_save_data(){
 	xSemaphoreGive(semSaveData);
 }

@@ -322,7 +322,7 @@
           },
           {
             "Type": "ButtonWithLabel",
-            "Name": "ButtSetCanales_1",
+            "Name": "ButtSetCanales",
             "X": 133,
             "Y": 190,
             "Width": 214,
@@ -499,6 +499,18 @@
               "Type": "ActionGotoScreen",
               "ScreenTransitionType": "ScreenTransitionNone",
               "ActionComponent": "EntradaMenu"
+            }
+          },
+          {
+            "InteractionName": "Interaction7",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "ButtSetCanales"
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "CanalesMenu"
             }
           }
         ]

@@ -31,12 +31,13 @@ Settings1ViewBase::Settings1ViewBase() :
 
     add(BackGroundAndTitle);
 
-    ButtSetCanales_1.setXY(133, 190);
-    ButtSetCanales_1.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
-    ButtSetCanales_1.setLabelText(touchgfx::TypedText(T___SINGLEUSE_CDHP));
-    ButtSetCanales_1.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
-    ButtSetCanales_1.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
-    add(ButtSetCanales_1);
+    ButtSetCanales.setXY(133, 190);
+    ButtSetCanales.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
+    ButtSetCanales.setLabelText(touchgfx::TypedText(T___SINGLEUSE_CDHP));
+    ButtSetCanales.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    ButtSetCanales.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    ButtSetCanales.setAction(buttonCallback);
+    add(ButtSetCanales);
 
     ButtSetGeneral.setXY(133, 49);
     ButtSetGeneral.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
@@ -122,5 +123,12 @@ void Settings1ViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& sr
         //When ButtSetInAudio clicked change screen to EntradaMenu
         //Go to EntradaMenu with no screen transition
         application().gotoEntradaMenuScreenNoTransition();
+    }
+    if (&src == &ButtSetCanales)
+    {
+        //Interaction7
+        //When ButtSetCanales clicked change screen to CanalesMenu
+        //Go to CanalesMenu with no screen transition
+        application().gotoCanalesMenuScreenNoTransition();
     }
 }

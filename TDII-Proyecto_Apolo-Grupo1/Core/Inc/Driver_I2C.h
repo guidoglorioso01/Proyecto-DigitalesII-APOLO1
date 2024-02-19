@@ -32,10 +32,14 @@
 #define STOP_SONG_CMD 0x17
 #define LOUD_CONFIG_CMD 0x18
 #define GET_MUSIC_STATE_CMD 0x19
+#define GET_BT_STATE_CMD 0x20
 
 #define COMAND_FAILED 0xFF
 #define COMAND_OK 0x33
 #define MAX_CMD_SEND 5
+
+#define BT_CONNECTED 1
+#define BT_DISCONNECTED 2
 
 typedef union  {
     UserData datos;
@@ -48,7 +52,7 @@ uint8_t send_cmd_esp(uint8_t CMD);
 uint8_t send_volume_esp(uint8_t volume, uint8_t ctr_loudness_state);
 void give_sem_save_data();
 uint8_t get_music_estate_esp();
-
+uint8_t get_bt_estate_esp();
 
 extern I2C_HandleTypeDef hi2c1;
 extern SemaphoreHandle_t semSaveData;

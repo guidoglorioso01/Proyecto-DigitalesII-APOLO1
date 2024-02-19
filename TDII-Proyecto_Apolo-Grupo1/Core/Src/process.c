@@ -14,6 +14,7 @@ extern SemaphoreHandle_t semProcessData; // semaforo para indicar si se puede to
 extern SemaphoreHandle_t semCalcCoefs;
 extern SemaphoreHandle_t semCalcVolume;
 extern SemaphoreHandle_t semDataReady;
+
 void init_tasks(){
 
 	/*
@@ -30,11 +31,11 @@ void init_tasks(){
 	xTaskCreate(SaveData_process, "SaveData", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 4 ,NULL);
 	xTaskCreate(volume_process, "volSYS", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
 	xTaskCreate(upd_progressVar_process, "progVar", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
+	xTaskCreate(Check_bt_process, "btcheck", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);
 	xTaskCreate(TouchGFXSYNC_process, "GFX SYNC", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2, NULL);
 	xTaskCreate(TouchGFX_Task, "UPD GFX", 3000, NULL, tskIDLE_PRIORITY + 2, NULL);
 	xTaskCreate(FilterData_process, "ProcessData", 2000, NULL, tskIDLE_PRIORITY + 3 ,NULL); 		// se le debe dar la mayor prioridad
 	xTaskCreate(CalculateCoefs_process, "CalcCoefsData", 500, NULL, tskIDLE_PRIORITY + 3 ,NULL); 	// Process que calcula los coeficientes aun mas prioridad para tenerlos listos antes de convertir
-	xTaskCreate(task_I2S_recieve, "Audio In", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 ,NULL);	// Recepcion datos I2S -> Prioridad una menos que la de procesamiento
 
 
 }
@@ -140,5 +141,24 @@ void upd_progressVar_process(void *arguments){
 
 		xQueueSend(queue_progres_var,&valor_progress,portMAX_DELAY);
 		vTaskDelay(pdMS_TO_TICKS(1000));
+	}
+}
+
+void Check_bt_process(void *arguments){
+	uint8_t previo=0;
+	uint8_t estado_actual=0;
+	while(1){
+		estado_actual = get_bt_estate_esp();
+		if(previo != estado_actual && previo != COMAND_FAILED){
+			previo = estado_actual;
+			if(estado_actual == BT_CONNECTED){
+				initI2SDriver();
+			}
+			if(estado_actual == BT_DISCONNECTED){
+				deinitI2SDriver();
+			}
+		}
+
+		vTaskDelay(pdMS_TO_TICKS(1500));
 	}
 }

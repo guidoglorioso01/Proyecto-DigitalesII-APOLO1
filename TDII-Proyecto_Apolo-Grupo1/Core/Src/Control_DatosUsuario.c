@@ -28,7 +28,7 @@ void init_userdata(){
 
 		user_data.audio_input.type_in = BLUT;
 		user_data.audio_input.channel = STEREO_CHANNEL_INPUT;
-		user_data.audio_input.channel_balance = 0; // va de -50 a 50
+		user_data.audio_input.channel_balance = 50; // va de -50 a 50
 
 		//configuracion general
 

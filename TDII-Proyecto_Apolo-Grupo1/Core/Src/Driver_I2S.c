@@ -31,18 +31,21 @@ int16_t bufferOut_CD[PINPONG_BUFF_SIZE];//={170,0,170,0,170,0,170,0,170,0,170,0,
 static volatile int16_t *ptrProcessOutAB = &bufferOut_AB[(PINPONG_BUFF_SIZE/2)];
 static volatile int16_t *ptrProcessOutCD = &bufferOut_CD[(PINPONG_BUFF_SIZE/2)];
 
-
+uint8_t initialized_I2S=0;
 //#############################################################################
 //Semaforos
 //#############################################################################
 SemaphoreHandle_t semRx_I2S;
 SemaphoreHandle_t semTxAB_I2S;
 SemaphoreHandle_t semTxCD_I2S;
+
+TaskHandle_t I2S_Task_Handler = NULL;
 extern SemaphoreHandle_t semDataReady;
 //#############################################################################
 //Init
 //#############################################################################
 void initI2SDriver() {
+
 
 	semRx_I2S = xSemaphoreCreateBinary();
 	semTxAB_I2S = xSemaphoreCreateBinary();
@@ -54,11 +57,11 @@ void initI2SDriver() {
 	//HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 
 	// Busco un flanco ascendente (si se usa como Master al ST entonces se comentan estas lineas)
-	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
-	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
+	//while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
+	//while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
 
-	vTaskPrioritySet(NULL, tskIDLE_PRIORITY + 3);
-	vTaskDelay(pdMS_TO_TICKS(1000));
+	//vTaskPrioritySet(NULL, tskIDLE_PRIORITY + 3);
+	//vTaskDelay(pdMS_TO_TICKS(1000));
 
 	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_RESET);    //use GPIO_PIN_SET for the other I2S mode
 	while (HAL_GPIO_ReadPin(WS_PIN_GPIO_Port, WS_PIN_Pin) != GPIO_PIN_SET);    //use GPIO_PIN_RESET for the other I2S mode   <<<<<<<< THIS
@@ -66,10 +69,30 @@ void initI2SDriver() {
 
 	HAL_I2S_Receive_DMA(&hi2s2,(uint16_t *) bufferIn, PINPONG_BUFF_SIZE);
 
+	xTaskCreate(task_I2S_recieve, "Audio In", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3 ,&I2S_Task_Handler);	// Recepcion datos I2S -> Prioridad una menos que la de procesamiento
+
 
 }
 
+void deinitI2SDriver(){
 
+	if(I2S_Task_Handler != NULL){
+		vTaskDelete(I2S_Task_Handler);
+		I2S_Task_Handler = NULL;
+
+		vSemaphoreDelete(semRx_I2S);
+		vSemaphoreDelete(semTxAB_I2S);
+		vSemaphoreDelete(semTxCD_I2S);
+
+		HAL_I2S_DMAStop(&hi2s2);
+		HAL_I2S_DMAStop(&hi2s3);
+		HAL_SPI_DMAStop(&hspi1);
+		initialized_I2S = 0;
+	}
+
+
+
+}
 
 //#############################################################################
 //CALLBACKS DMA
@@ -107,15 +130,15 @@ void callbackI2SRx_CMP() {
 //	tim1_cuenta = __HAL_TIM_GET_COUNTER(&htim2);
 }
 void callbackI2SRx_HALF() {
-	static uint8_t i=1;
+
 //	tim1_cuenta = 0 ;
 //	__HAL_TIM_SET_COUNTER(&htim2,0);
 
-	if(i){
+	if(!initialized_I2S){
 		HAL_I2S_Transmit_DMA(&hi2s3,(uint16_t *) bufferOut_AB, PINPONG_BUFF_SIZE);
 		HAL_TIM_OC_Start(&htim1, TIM_CHANNEL_4);
 		HAL_SPI_Transmit_DMA(&hspi1, (uint16_t*)bufferOut_CD, PINPONG_BUFF_SIZE);
-		i=0;
+		initialized_I2S=1;
 	}
 
 	ptrProcessIn = &bufferIn[0];
@@ -153,7 +176,7 @@ void callbackI2STx_HALF() {
 //#############################################################################
 void task_I2S_recieve() {
 
-	initI2SDriver();
+	//initI2SDriver();
 
 	while(1) {
 

@@ -35,7 +35,7 @@ protected:
     Template template1;
     touchgfx::TextArea Title;
     touchgfx::ButtonWithIcon Home;
-    touchgfx::ButtonWithLabel ButtSetCanales_1;
+    touchgfx::ButtonWithLabel ButtSetCanales;
     touchgfx::ButtonWithLabel ButtSetGeneral;
     touchgfx::ButtonWithLabel ButtSetEcualizador;
     touchgfx::ButtonWithLabel ButtResetData;
