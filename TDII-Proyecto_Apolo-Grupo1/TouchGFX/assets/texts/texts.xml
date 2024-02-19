@@ -72,6 +72,24 @@
       </Text>
     </TextGroup>
     <TextGroup Id="Unsorted">
+      <Text Id="__SingleUse_XQWZ" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">No</Translation>
+      </Text>
+      <Text Id="__SingleUse_4I1H" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Si</Translation>
+      </Text>
+      <Text Id="__SingleUse_0YPJ" Alignment="Left" TypographyId="Info">
+        <Translation Language="GB">Toda su informacion se perdera</Translation>
+      </Text>
+      <Text Id="__SingleUse_CTOA" Alignment="Left" TypographyId="Info">
+        <Translation Language="GB">¿Desea resetear los datos de fabrica?</Translation>
+      </Text>
+      <Text Id="__SingleUse_MPZM" Alignment="Left" TypographyId="Titulos">
+        <Translation Language="GB">Resetear datos de fabrica</Translation>
+      </Text>
+      <Text Id="__SingleUse_CDHP" Alignment="Center" TypographyId="Botones">
+        <Translation Language="GB">Canales salida</Translation>
+      </Text>
       <Text Id="name_song" Alignment="Left" TypographyId="Titulos">
         <Translation Language="GB">TEXT</Translation>
       </Text>
@@ -228,7 +246,7 @@
         <Translation Language="GB">Ecualizador</Translation>
       </Text>
       <Text Id="__SingleUse_02MN" Alignment="Center" TypographyId="Botones">
-        <Translation Language="GB">Canales salida</Translation>
+        <Translation Language="GB">Resetear datos</Translation>
       </Text>
       <Text Id="Canal2" Alignment="Left" TypographyId="Botones">
         <Translation Language="GB">Canal de salida:</Translation>

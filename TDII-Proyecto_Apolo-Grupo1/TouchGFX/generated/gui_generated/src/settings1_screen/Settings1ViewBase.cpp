@@ -23,9 +23,23 @@ Settings1ViewBase::Settings1ViewBase() :
     Title.setTypedText(touchgfx::TypedText(T_BK_TITLE2));
     BackGroundAndTitle.add(Title);
 
+    Home.setXY(11, 255);
+    Home.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_ICON_ROUNDED_TINY_OUTLINE_DISABLED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_ICON_ROUNDED_TINY_OUTLINE_DISABLED_ID), touchgfx::Bitmap(BITMAP_ICON_THEME_IMAGES_ACTION_HOME_50_50_E8F6FB_SVG_ID), touchgfx::Bitmap(BITMAP_ICON_THEME_IMAGES_ACTION_HOME_50_50_E8F6FB_SVG_ID));
+    Home.setIconXY(6, 6);
+    Home.setAction(buttonCallback);
+    BackGroundAndTitle.add(Home);
+
     add(BackGroundAndTitle);
 
-    ButtSetGeneral.setXY(133, 56);
+    ButtSetCanales.setXY(133, 190);
+    ButtSetCanales.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
+    ButtSetCanales.setLabelText(touchgfx::TypedText(T___SINGLEUSE_CDHP));
+    ButtSetCanales.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    ButtSetCanales.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    ButtSetCanales.setAction(buttonCallback);
+    add(ButtSetCanales);
+
+    ButtSetGeneral.setXY(133, 49);
     ButtSetGeneral.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
     ButtSetGeneral.setLabelText(touchgfx::TypedText(T___SINGLEUSE_QQXB));
     ButtSetGeneral.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
@@ -33,7 +47,7 @@ Settings1ViewBase::Settings1ViewBase() :
     ButtSetGeneral.setAction(buttonCallback);
     add(ButtSetGeneral);
 
-    ButtSetEcualizador.setXY(133, 111);
+    ButtSetEcualizador.setXY(133, 96);
     ButtSetEcualizador.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
     ButtSetEcualizador.setLabelText(touchgfx::TypedText(T___SINGLEUSE_WHNC));
     ButtSetEcualizador.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
@@ -41,15 +55,15 @@ Settings1ViewBase::Settings1ViewBase() :
     ButtSetEcualizador.setAction(buttonCallback);
     add(ButtSetEcualizador);
 
-    ButtSetCanales.setXY(133, 226);
-    ButtSetCanales.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
-    ButtSetCanales.setLabelText(touchgfx::TypedText(T___SINGLEUSE_02MN));
-    ButtSetCanales.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
-    ButtSetCanales.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
-    ButtSetCanales.setAction(buttonCallback);
-    add(ButtSetCanales);
+    ButtResetData.setXY(133, 237);
+    ButtResetData.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
+    ButtResetData.setLabelText(touchgfx::TypedText(T___SINGLEUSE_02MN));
+    ButtResetData.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    ButtResetData.setLabelColorPressed(touchgfx::Color::getColorFromRGB(255, 255, 255));
+    ButtResetData.setAction(buttonCallback);
+    add(ButtResetData);
 
-    ButtSetInAudio.setXY(133, 167);
+    ButtSetInAudio.setXY(133, 142);
     ButtSetInAudio.setBitmaps(touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID), touchgfx::Bitmap(BITMAP_ALTERNATE_THEME_IMAGES_WIDGETS_BUTTON_REGULAR_HEIGHT_36_MEDIUM_ROUND_PRESSED_ID));
     ButtSetInAudio.setLabelText(touchgfx::TypedText(T___SINGLEUSE_5BLT));
     ButtSetInAudio.setLabelColor(touchgfx::Color::getColorFromRGB(255, 255, 255));
@@ -58,6 +72,7 @@ Settings1ViewBase::Settings1ViewBase() :
     add(ButtSetInAudio);
 
     homeAndBack1.setXY(0, 255);
+    homeAndBack1.setVisible(false);
     add(homeAndBack1);
 }
 
@@ -74,6 +89,13 @@ void Settings1ViewBase::setupScreen()
 
 void Settings1ViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& src)
 {
+    if (&src == &Home)
+    {
+        //Interaction1
+        //When Home clicked change screen to MainScreen
+        //Go to MainScreen with no screen transition
+        application().gotoMainScreenScreenNoTransition();
+    }
     if (&src == &ButtSetGeneral)
     {
         //Interaction3
@@ -88,12 +110,12 @@ void Settings1ViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& sr
         //Go to EcualizadorMenu with no screen transition
         application().gotoEcualizadorMenuScreenNoTransition();
     }
-    if (&src == &ButtSetCanales)
+    if (&src == &ButtResetData)
     {
         //Interaction5
-        //When ButtSetCanales clicked change screen to CanalesMenu
-        //Go to CanalesMenu with no screen transition
-        application().gotoCanalesMenuScreenNoTransition();
+        //When ButtResetData clicked change screen to ResetMenu
+        //Go to ResetMenu with no screen transition
+        application().gotoResetMenuScreenNoTransition();
     }
     if (&src == &ButtSetInAudio)
     {
@@ -101,5 +123,12 @@ void Settings1ViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& sr
         //When ButtSetInAudio clicked change screen to EntradaMenu
         //Go to EntradaMenu with no screen transition
         application().gotoEntradaMenuScreenNoTransition();
+    }
+    if (&src == &ButtSetCanales)
+    {
+        //Interaction7
+        //When ButtSetCanales clicked change screen to CanalesMenu
+        //Go to CanalesMenu with no screen transition
+        application().gotoCanalesMenuScreenNoTransition();
     }
 }

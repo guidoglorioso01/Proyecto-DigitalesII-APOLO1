@@ -280,6 +280,18 @@
     <Filter Include="Source Files\generated\gui_generated\generalmenu_screen">
       <UniqueIdentifier>DB47C9E9-BE6D-319D-A6A7-16522EB29F72</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\gui\resetmenu_screen">
+      <UniqueIdentifier>62AD8A76-A661-6D62-73D4-D10563AFB06E</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gui\resetmenu_screen">
+      <UniqueIdentifier>500C1755-3780-EB7F-BA5D-3CD111B9F9D7</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\resetmenu_screen">
+      <UniqueIdentifier>F6B5F498-7DCF-6F8C-D9A2-3590DC7A262B</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\resetmenu_screen">
+      <UniqueIdentifier>76352ECF-2854-649C-0A0B-3C5F46456857</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(TouchGFXReleasePath)\framework\source\platform\driver\touch\SDL2TouchController.cpp">
@@ -395,6 +407,15 @@
     </ClCompile>
     <ClCompile Include="..\..\generated\gui_generated\src\generalmenu_screen\GeneralMenuViewBase.cpp">
       <Filter>Source Files\generated\gui_generated\generalmenu_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\resetmenu_screen\ResetMenuPresenter.cpp">
+      <Filter>Source Files\gui\resetmenu_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\resetmenu_screen\ResetMenuView.cpp">
+      <Filter>Source Files\gui\resetmenu_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\resetmenu_screen\ResetMenuViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\resetmenu_screen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -921,6 +942,15 @@
     </ClInclude>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\generalmenu_screen\GeneralMenuViewBase.hpp">
       <Filter>Header Files\generated\gui_generated\generalmenu_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\resetmenu_screen\ResetMenuPresenter.hpp">
+      <Filter>Header Files\gui\resetmenu_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\resetmenu_screen\ResetMenuView.hpp">
+      <Filter>Header Files\gui\resetmenu_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\resetmenu_screen\ResetMenuViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\resetmenu_screen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

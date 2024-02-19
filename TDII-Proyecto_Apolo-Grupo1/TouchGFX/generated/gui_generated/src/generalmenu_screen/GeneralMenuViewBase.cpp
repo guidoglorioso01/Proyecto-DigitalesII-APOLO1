@@ -65,7 +65,7 @@ GeneralMenuViewBase::GeneralMenuViewBase() :
     ButtEc.setAction(buttonCallback);
     add(ButtEc);
 
-    homeAndBack1.setXY(0, 253);
+    homeAndBack1.setXY(0, 255);
     add(homeAndBack1);
 
     LabelVolumenCanal.setXY(84, 205);

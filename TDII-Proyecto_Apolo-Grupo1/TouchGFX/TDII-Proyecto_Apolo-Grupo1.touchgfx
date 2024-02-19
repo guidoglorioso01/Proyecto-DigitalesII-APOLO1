@@ -301,14 +301,52 @@
                   "Blue": 216
                 },
                 "AutoSize": true
+              },
+              {
+                "Type": "ButtonWithIcon",
+                "Name": "Home",
+                "X": 11,
+                "Y": 255,
+                "Width": 60,
+                "Height": 60,
+                "Pressed": "__generated\\alternate_theme_images_widgets_button_icon_rounded_tiny_outline_disabled.png",
+                "Released": "__generated\\alternate_theme_images_widgets_button_icon_rounded_tiny_outline_disabled.png",
+                "IconPressed": "__generated\\icon_theme_images_action_home_50_50_E8F6FB.svg.png",
+                "IconReleased": "__generated\\icon_theme_images_action_home_50_50_E8F6FB.svg.png",
+                "IconX": 6,
+                "IconY": 6,
+                "IconHeight": 50,
+                "IconWidth": 50
               }
             ]
           },
           {
             "Type": "ButtonWithLabel",
+            "Name": "ButtSetCanales",
+            "X": 133,
+            "Y": 190,
+            "Width": 214,
+            "Height": 36,
+            "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_36_medium_round_pressed.png",
+            "Released": "__generated\\alternate_theme_images_widgets_button_regular_height_36_medium_round_pressed.png",
+            "TextId": "__SingleUse_CDHP",
+            "ReleasedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "PressedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "TextRotation": "0"
+          },
+          {
+            "Type": "ButtonWithLabel",
             "Name": "ButtSetGeneral",
             "X": 133,
-            "Y": 56,
+            "Y": 49,
             "Width": 214,
             "Height": 36,
             "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_36_medium_round_pressed.png",
@@ -330,7 +368,7 @@
             "Type": "ButtonWithLabel",
             "Name": "ButtSetEcualizador",
             "X": 133,
-            "Y": 111,
+            "Y": 96,
             "Width": 214,
             "Height": 36,
             "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_36_medium_round_pressed.png",
@@ -350,9 +388,9 @@
           },
           {
             "Type": "ButtonWithLabel",
-            "Name": "ButtSetCanales",
+            "Name": "ButtResetData",
             "X": 133,
-            "Y": 226,
+            "Y": 237,
             "Width": 214,
             "Height": 36,
             "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_36_medium_round_pressed.png",
@@ -374,7 +412,7 @@
             "Type": "ButtonWithLabel",
             "Name": "ButtSetInAudio",
             "X": 133,
-            "Y": 167,
+            "Y": 142,
             "Width": 214,
             "Height": 36,
             "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_36_medium_round_pressed.png",
@@ -398,6 +436,7 @@
             "Y": 255,
             "Width": 480,
             "Height": 67,
+            "Visible": false,
             "CustomContainerDefinitionName": "HomeAndBack"
           }
         ],
@@ -405,11 +444,13 @@
           {
             "InteractionName": "Interaction1",
             "Trigger": {
-              "Type": "TriggerClicked"
+              "Type": "TriggerClicked",
+              "TriggerComponent": "Home"
             },
             "Action": {
               "Type": "ActionGotoScreen",
-              "ScreenTransitionType": "ScreenTransitionNone"
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "MainScreen"
             }
           },
           {
@@ -440,12 +481,12 @@
             "InteractionName": "Interaction5",
             "Trigger": {
               "Type": "TriggerClicked",
-              "TriggerComponent": "ButtSetCanales"
+              "TriggerComponent": "ButtResetData"
             },
             "Action": {
               "Type": "ActionGotoScreen",
               "ScreenTransitionType": "ScreenTransitionNone",
-              "ActionComponent": "CanalesMenu"
+              "ActionComponent": "ResetMenu"
             }
           },
           {
@@ -458,6 +499,18 @@
               "Type": "ActionGotoScreen",
               "ScreenTransitionType": "ScreenTransitionNone",
               "ActionComponent": "EntradaMenu"
+            }
+          },
+          {
+            "InteractionName": "Interaction7",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "ButtSetCanales"
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "CanalesMenu"
             }
           }
         ]
@@ -636,7 +689,7 @@
                 "Name": "Title",
                 "X": 111,
                 "Width": 258,
-                "Height": 34,
+                "Height": 36,
                 "TextId": "__SingleUse_7546",
                 "TextRotation": "0",
                 "Color": {
@@ -795,7 +848,7 @@
             "X": 18,
             "Y": 285,
             "Width": 393,
-            "Height": 18,
+            "Height": 16,
             "TextId": "__SingleUse_FL50",
             "TextRotation": "0",
             "AutoSize": true
@@ -805,7 +858,7 @@
             "Name": "textArea2",
             "Y": 36,
             "Width": 27,
-            "Height": 234,
+            "Height": 208,
             "TextId": "__SingleUse_04A0",
             "TextRotation": "0",
             "AutoSize": true
@@ -924,7 +977,7 @@
                 "Name": "Title",
                 "X": 123,
                 "Width": 234,
-                "Height": 34,
+                "Height": 36,
                 "TextId": "__SingleUse_LFYS",
                 "TextRotation": "0",
                 "Color": {
@@ -942,7 +995,7 @@
             "X": 37,
             "Y": 147,
             "Width": 146,
-            "Height": 24,
+            "Height": 25,
             "TextId": "__SingleUse_1Q3C",
             "TextRotation": "0",
             "Color": {
@@ -965,8 +1018,8 @@
             "BackgroundX": 12,
             "BackgroundY": 9,
             "IndicatorMax": 200,
-            "ValueMax": 50,
-            "ValueMin": -50
+            "ValueMax": 100,
+            "InitValue": 50
           },
           {
             "Type": "ButtonWithLabel",
@@ -977,7 +1030,7 @@
             "Height": 36,
             "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_36_tiny_rounded_disabled.png",
             "Released": "__generated\\alternate_theme_images_widgets_button_regular_height_36_tiny_rounded_disabled.png",
-            "TextId": "AUX_INAUDIO",
+            "TextId": "Bluetooth_INAUDIO",
             "ReleasedColor": {
               "Red": 255,
               "Green": 255,
@@ -997,7 +1050,7 @@
             "X": 37,
             "Y": 60,
             "Width": 142,
-            "Height": 24,
+            "Height": 25,
             "TextId": "__SingleUse_P180",
             "TextRotation": "0",
             "Color": {
@@ -1035,7 +1088,7 @@
             "X": 37,
             "Y": 105,
             "Width": 62,
-            "Height": 24,
+            "Height": 25,
             "TextId": "__SingleUse_XIV0",
             "TextRotation": "0",
             "Color": {
@@ -1058,7 +1111,7 @@
             "X": 446,
             "Y": 148,
             "Width": 15,
-            "Height": 24,
+            "Height": 25,
             "TextId": "__SingleUse_ONNS",
             "TextRotation": "0",
             "Color": {
@@ -1074,7 +1127,7 @@
             "X": 210,
             "Y": 148,
             "Width": 12,
-            "Height": 24,
+            "Height": 25,
             "TextId": "__SingleUse_PBBT",
             "TextRotation": "0",
             "Color": {
@@ -1143,7 +1196,7 @@
                 "Name": "Title",
                 "X": 86,
                 "Width": 308,
-                "Height": 36,
+                "Height": 34,
                 "TextId": "__SingleUse_JH9L",
                 "TextRotation": "0",
                 "Color": {
@@ -1232,7 +1285,7 @@
             "X": 66,
             "Y": 228,
             "Width": 153,
-            "Height": 25,
+            "Height": 24,
             "TextId": "__SingleUse_T4X7",
             "TextRotation": "0",
             "Color": {
@@ -1270,7 +1323,7 @@
             "X": 69,
             "Y": 36,
             "Width": 155,
-            "Height": 50,
+            "Height": 48,
             "TextId": "__SingleUse_5H77",
             "TextRotation": "0",
             "Color": {
@@ -1285,7 +1338,7 @@
             "X": 70,
             "Y": 135,
             "Width": 153,
-            "Height": 25,
+            "Height": 24,
             "TextId": "__SingleUse_XYXR",
             "TextRotation": "0",
             "Color": {
@@ -1300,7 +1353,7 @@
             "X": 69,
             "Y": 183,
             "Width": 114,
-            "Height": 25,
+            "Height": 24,
             "TextId": "__SingleUse_4ZEJ",
             "TextRotation": "0",
             "Color": {
@@ -1315,7 +1368,7 @@
             "X": 69,
             "Y": 95,
             "Width": 73,
-            "Height": 25,
+            "Height": 24,
             "TextId": "__SingleUse_0Y1V",
             "TextRotation": "0",
             "Color": {
@@ -1427,7 +1480,7 @@
                 "Name": "Title",
                 "X": 124,
                 "Width": 239,
-                "Height": 36,
+                "Height": 34,
                 "TextId": "TITLE_CROSS_OVER_EDIT",
                 "TextRotation": "0",
                 "Color": {
@@ -1518,7 +1571,7 @@
             "X": 6,
             "Y": 61,
             "Width": 43,
-            "Height": 144,
+            "Height": 162,
             "TextId": "__SingleUse_V3DE",
             "TextRotation": "0",
             "AutoSize": true
@@ -1529,7 +1582,7 @@
             "X": 38,
             "Y": 216,
             "Width": 432,
-            "Height": 16,
+            "Height": 18,
             "TextId": "__SingleUse_JUPF",
             "TextRotation": "0",
             "AutoSize": true
@@ -1749,7 +1802,7 @@
           {
             "Type": "CustomContainerInstance",
             "Name": "homeAndBack1",
-            "Y": 253,
+            "Y": 255,
             "Width": 480,
             "Height": 67,
             "CustomContainerDefinitionName": "HomeAndBack"
@@ -1831,6 +1884,155 @@
             "Action": {
               "Type": "ActionCustom",
               "FunctionName": "GFXChangeLoudnessState"
+            }
+          }
+        ]
+      },
+      {
+        "Name": "ResetMenu",
+        "Components": [
+          {
+            "Type": "Container",
+            "Name": "BackGroundAndTitle",
+            "Width": 480,
+            "Height": 320,
+            "Components": [
+              {
+                "Type": "CustomContainerInstance",
+                "Name": "template1",
+                "Width": 480,
+                "Height": 320,
+                "CustomContainerDefinitionName": "Template"
+              },
+              {
+                "Type": "TextArea",
+                "Name": "Title",
+                "X": 67,
+                "Width": 346,
+                "Height": 34,
+                "TextId": "__SingleUse_MPZM",
+                "TextRotation": "0",
+                "Color": {
+                  "Red": 255,
+                  "Green": 227,
+                  "Blue": 216
+                },
+                "AutoSize": true
+              },
+              {
+                "Type": "ButtonWithLabel",
+                "Name": "ButtSi",
+                "X": 106,
+                "Y": 170,
+                "Width": 100,
+                "Height": 36,
+                "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_36_tiny_rounded_disabled.png",
+                "Released": "__generated\\alternate_theme_images_widgets_button_regular_height_36_tiny_rounded_disabled.png",
+                "TextId": "__SingleUse_4I1H",
+                "ReleasedColor": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "PressedColor": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "TextRotation": "0",
+                "Preset": "alternate_theme\\presets\\button\\regular\\height_36\\tiny_rounded_disabled.json"
+              },
+              {
+                "Type": "ButtonWithLabel",
+                "Name": "ButtNo",
+                "X": 275,
+                "Y": 170,
+                "Width": 100,
+                "Height": 36,
+                "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_36_tiny_rounded_disabled.png",
+                "Released": "__generated\\alternate_theme_images_widgets_button_regular_height_36_tiny_rounded_disabled.png",
+                "TextId": "__SingleUse_XQWZ",
+                "ReleasedColor": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "PressedColor": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "TextRotation": "0",
+                "Preset": "alternate_theme\\presets\\button\\regular\\height_36\\tiny_rounded_disabled.json"
+              }
+            ]
+          },
+          {
+            "Type": "CustomContainerInstance",
+            "Name": "homeAndBack1",
+            "Y": 255,
+            "Width": 480,
+            "Height": 67,
+            "CustomContainerDefinitionName": "HomeAndBack"
+          },
+          {
+            "Type": "TextArea",
+            "Name": "textArea1",
+            "X": 106,
+            "Y": 65,
+            "Width": 269,
+            "Height": 18,
+            "TextId": "__SingleUse_CTOA",
+            "TextRotation": "0",
+            "AutoSize": true
+          },
+          {
+            "Type": "TextArea",
+            "Name": "textArea1_1",
+            "X": 128,
+            "Y": 84,
+            "Width": 225,
+            "Height": 18,
+            "TextId": "__SingleUse_0YPJ",
+            "TextRotation": "0",
+            "AutoSize": true
+          }
+        ],
+        "Interactions": [
+          {
+            "InteractionName": "Interaction1",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "ButtNo"
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "Settings1"
+            }
+          },
+          {
+            "InteractionName": "Interaction2",
+            "HasCompletedTrigger": true,
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "ButtSi"
+            },
+            "Action": {
+              "Type": "ActionCustom",
+              "FunctionName": "ButtYesPress"
+            }
+          },
+          {
+            "InteractionName": "Interaction3",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "ButtSi"
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "MainScreen"
             }
           }
         ]
@@ -1967,7 +2169,7 @@
     "FrameworkFeatures": {
       "LCD16bpp": {
         "Id": "LCD16bpp",
-        "IsEnabled": false
+        "IsEnabled": true
       }
     },
     "GenerateAssetsCommand": "make -f simulator/gcc/Makefile assets -j8",

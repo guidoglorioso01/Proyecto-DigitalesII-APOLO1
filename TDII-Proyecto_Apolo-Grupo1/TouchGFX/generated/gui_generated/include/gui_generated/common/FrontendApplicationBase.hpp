@@ -44,6 +44,9 @@ public:
     // GeneralMenu
     void gotoGeneralMenuScreenNoTransition();
 
+    // ResetMenu
+    void gotoResetMenuScreenNoTransition();
+
 protected:
     touchgfx::Callback<FrontendApplicationBase> transitionCallback;
     FrontendHeap& frontendHeap;
@@ -72,6 +75,9 @@ protected:
 
     // GeneralMenu
     void gotoGeneralMenuScreenNoTransitionImpl();
+
+    // ResetMenu
+    void gotoResetMenuScreenNoTransitionImpl();
 };
 
 #endif // FRONTENDAPPLICATIONBASE_HPP
